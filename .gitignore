@@ -1,0 +1,15 @@
+## Visual Studio files
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Giu lai thu muc Data va cac tap tin du lieu
+!Library-Management/bin/Debug/Data/
+!Library-Management/Data/
+!Data/
+!Data/**
+

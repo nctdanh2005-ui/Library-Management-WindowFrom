@@ -1,0 +1,15 @@
+﻿CNTT;Công nghệ thông tin;
+KT;Kinh tế - Quản trị;
+NN;Ngoại ngữ;
+KH;Khoa học Xã hội;
+LTCS;Lập trình C#;CNTT
+CSDL;Cơ sở dữ liệu;CNTT
+MMT;Mạng máy tính;CNTT
+QTKD;Quản trị kinh doanh;KT
+KTTC;Kế toán - Tài chính;KT
+MKT;Marketing;KT
+TA;Tiếng Anh;NN
+TN;Tiếng Nhật;NN
+TH;Tiếng Hàn;NN
+LS;Lịch sử;KH
+TLH;Tâm lý học;KH

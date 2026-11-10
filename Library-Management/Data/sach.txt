@@ -1,0 +1,20 @@
+﻿S01;Lập trình C# từ cơ bản đến nâng cao;Phạm Hữu Khang;2021;LTCS;15;s01.jpg
+S02;Giáo trình C# và WinForms toàn tập;Nguyễn Vũ Cẩm Tú;2020;LTCS;20;s02.jpg
+S03;Cơ sở dữ liệu nâng cao và ứng dụng;Đỗ Trung Tuấn;2019;CSDL;12;s03.jpg
+S04;Thiết kế và cài đặt hệ CSDL quan hệ;Lê Tiến Vương;2022;CSDL;18;s04.jpg
+S05;Giáo trình Mạng máy tính căn bản;Hồ Đắc Phương;2021;MMT;25;s05.jpg
+S06;An toàn và bảo mật hệ thống mạng;Nguyễn Nam Hải;2023;MMT;10;s06.jpg
+S07;Nhập môn Công nghệ thông tin;Trần Đan Thư;2020;CNTT;30;s07.jpg
+S08;Kiến trúc máy tính và Hợp ngữ;Lê Đình Danh;2018;CNTT;14;s08.jpg
+S09;Quản trị học hiện đại;Nguyễn Thị Liên Diệp;2021;QTKD;16;s09.jpg
+S10;Khởi nghiệp tinh gọn trong thời đại số;Eric Ries;2020;QTKD;22;s10.jpg
+S11;Nguyên lý Kế toán cơ bản;Võ Văn Nhị;2022;KTTC;18;s11.jpg
+S12;Phân tích báo cáo tài chính doanh nghiệp;Nguyễn Ngọc Dung;2021;KTTC;15;s12.jpg
+S13;Marketing căn bản thế hệ mới;Philip Kotler;2023;MKT;20;s13.jpg
+S14;Digital Marketing từ A đến Z;Nguyễn Cao Phong;2022;MKT;12;s14.jpg
+S15;Ngữ pháp Tiếng Anh toàn tập;Mai Lan Hương;2021;TA;35;s15.jpg
+S16;Luyện thi TOEIC cấp tốc;Nguyễn Thành Long;2022;TA;28;s16.jpg
+S17;Giáo trình Minna no Nihongo I;3A Corporation;2020;TN;25;s17.jpg
+S18;Tiếng Hàn tổng hợp cho người Việt;Cho Hang Rok;2021;TH;19;s18.jpg
+S19;Đại cương Lịch sử Việt Nam;Trần Bá Đệ;2019;LS;15;s19.jpg
+S20;Tâm lý học đại cương;Nguyễn Quang Uẩn;2022;TLH;17;s20.jpg
