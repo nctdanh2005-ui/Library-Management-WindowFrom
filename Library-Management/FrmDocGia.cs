@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Library_Management
@@ -9,6 +13,9 @@ namespace Library_Management
         // Mã độc giả đang chọn trên ListView (dùng cho Sửa, Xóa, Gia hạn, Khóa/Mở khóa)
         private string maDangChon = "";
 
+        // Cờ hiệu: form đang khởi tạo thì không xử lý sự kiện tìm kiếm / lọc
+        private bool dangKhoiTao = false;
+
         public FrmDocGia()
         {
             InitializeComponent();
@@ -16,25 +23,58 @@ namespace Library_Management
 
         private void FrmDocGia_Load(object sender, EventArgs e)
         {
+            // Bật cờ chống sự kiện trong lúc đang nạp dữ liệu ban đầu
+            dangKhoiTao = true;
+
             // Trạng thái mặc định khi thêm mới là "HoatDong"
             if (cboTrangThai.Items.Count > 0)
             {
                 cboTrangThai.SelectedIndex = 0;
             }
 
+            // Tự động nạp danh sách các lớp KHÔNG TRÙNG LẶP vào ComboBox
+            NapComboBoxLop();
+
             // Đổ dữ liệu từ docgia.txt (qua DuLieuChung.DanhSachDocGia) lên ListView
             HienThiDanhSachDocGia();
+
+            dangKhoiTao = false;
         }
 
         // ================= HIỂN THỊ DANH SÁCH LÊN LISTVIEW =================
 
         // Đổ dữ liệu từ DuLieuChung.DanhSachDocGia lên ListView (kiểu Details)
+        // Kết hợp: LỌC THEO LỚP + TÌM THEO HỌ TÊN + TÔ MÀU CẢNH BÁO HẠN THẺ
         private void HienThiDanhSachDocGia()
         {
             lvDocGia.Items.Clear();
 
+            // Từ khóa tìm theo họ tên (đã chuyển về chữ thường)
+            string tuKhoa = txtTimKiem.Text.Trim().ToLower();
+
+            // Lớp đang chọn để lọc (mặc định mục đầu tiên là "Tất cả lớp")
+            string lopLoc = "";
+            if (cboLop.SelectedIndex > 0 && cboLop.SelectedItem != null)
+            {
+                lopLoc = cboLop.SelectedItem.ToString();
+            }
+
+            DateTime homNay = DateTime.Now;
+
             foreach (DocGia dg in DuLieuChung.DanhSachDocGia)
             {
+                // 1. Lọc theo lớp
+                if (lopLoc != "" && dg.Lop != lopLoc)
+                {
+                    continue;
+                }
+
+                // 2. Tìm kiếm theo HoTen (yêu cầu đề bài: .ToLower().Contains())
+                if (tuKhoa != "" && !dg.HoTen.ToLower().Contains(tuKhoa))
+                {
+                    continue;
+                }
+
                 ListViewItem item = new ListViewItem(dg.Ma);
                 item.SubItems.Add(dg.HoTen);
                 item.SubItems.Add(dg.Lop);
@@ -42,8 +82,116 @@ namespace Library_Management
                 item.SubItems.Add(dg.TrangThai);
                 item.Tag = dg;
 
+                // 3. Tô màu cảnh báo NGAY KHI DUYỆT TỪNG DÒNG:
+                //    - Hết hạn HOẶC bị khóa  -> nền hồng (LightPink)
+                //    - Sắp hết hạn (còn dưới 7 ngày) -> nền vàng (LightYellow)
+                int soNgayConLai = (dg.NgayHetHan.Date - homNay.Date).Days;
+                if (dg.TrangThai == "BiKhoa" || soNgayConLai < 0)
+                {
+                    item.BackColor = Color.LightPink;
+                }
+                else if (soNgayConLai < 7)
+                {
+                    item.BackColor = Color.LightYellow;
+                }
+
                 lvDocGia.Items.Add(item);
             }
+        }
+
+        // Tự động nạp danh sách các lớp KHÔNG TRÙNG LẶP vào ComboBox lọc
+        private void NapComboBoxLop()
+        {
+            // Giữ lại lớp đang chọn (nếu còn)
+            string lopDangChon = "";
+            if (cboLop.SelectedItem != null)
+            {
+                lopDangChon = cboLop.SelectedItem.ToString();
+            }
+
+            cboLop.Items.Clear();
+            cboLop.Items.Add("Tất cả lớp");
+
+            // Thu thập các lớp khác nhau bằng vòng lặp foreach
+            List<string> dsLop = new List<string>();
+            foreach (DocGia dg in DuLieuChung.DanhSachDocGia)
+            {
+                if (!string.IsNullOrEmpty(dg.Lop) && !dsLop.Contains(dg.Lop))
+                {
+                    dsLop.Add(dg.Lop);
+                }
+            }
+            dsLop.Sort();
+
+            foreach (string lop in dsLop)
+            {
+                cboLop.Items.Add(lop);
+            }
+
+            // Chọn lại lớp cũ, không có thì về "Tất cả lớp"
+            int viTri = 0;
+            for (int i = 0; i < cboLop.Items.Count; i++)
+            {
+                if (cboLop.Items[i].ToString() == lopDangChon)
+                {
+                    viTri = i;
+                    break;
+                }
+            }
+            cboLop.SelectedIndex = viTri;
+        }
+
+        // ================= TÌM KIẾM & LỌC THEO LỚP =================
+
+        // Tìm theo họ tên ngay khi người dùng gõ (hoặc bấm nút Tìm)
+        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            if (dangKhoiTao)
+            {
+                return;
+            }
+            HienThiDanhSachDocGia();
+        }
+
+        // Nhấn Enter trong ô tìm kiếm cũng thực hiện tìm kiếm
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                HienThiDanhSachDocGia();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void btnTimKiem_Click(object sender, EventArgs e)
+        {
+            HienThiDanhSachDocGia();
+        }
+
+        // Chọn lớp nào thì ListView chỉ hiện độc giả của lớp đó
+        private void cboLop_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (dangKhoiTao)
+            {
+                return;
+            }
+            HienThiDanhSachDocGia();
+        }
+
+        // Xóa tìm kiếm + lọc lớp để hiện toàn bộ độc giả
+        private void btnTatCa_Click(object sender, EventArgs e)
+        {
+            dangKhoiTao = true;
+            txtTimKiem.Clear();
+            if (cboLop.Items.Count > 0)
+            {
+                cboLop.SelectedIndex = 0;
+            }
+            dangKhoiTao = false;
+
+            HienThiDanhSachDocGia();
+            txtTimKiem.Focus();
         }
 
         // Tìm đối tượng Độc giả theo mã (vòng lặp foreach)
@@ -168,6 +316,9 @@ namespace Library_Management
             // Ghi đè file docgia.txt
             DuLieuChung.GhiDocGia();
 
+            // Cập nhật lại ComboBox lớp (phát sinh lớp mới nếu có)
+            NapComboBoxLop();
+
             HienThiDanhSachDocGia();
             LamMoiNhapLieu();
             MessageBox.Show("Thêm độc giả thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -245,6 +396,9 @@ namespace Library_Management
             // Ghi đè file docgia.txt
             DuLieuChung.GhiDocGia();
 
+            // Cập nhật lại ComboBox lớp (độc giả có thể chuyển lớp)
+            NapComboBoxLop();
+
             maDangChon = maMoi;
             HienThiDanhSachDocGia();
             CapNhatNutKhoaMoKhoa();
@@ -278,6 +432,9 @@ namespace Library_Management
 
                 // Ghi đè file docgia.txt
                 DuLieuChung.GhiDocGia();
+
+                // Cập nhật lại ComboBox lớp (lớp có thể không còn độc giả)
+                NapComboBoxLop();
 
                 LamMoiNhapLieu();
                 HienThiDanhSachDocGia();
@@ -378,11 +535,184 @@ namespace Library_Management
                 "Trạng thái thẻ", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // Làm mới / nhập lại dữ liệu trên form
+        // Làm mới / nhập lại dữ liệu trên form (xóa tìm kiếm và lọc lớp)
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
+            dangKhoiTao = true;
+            txtTimKiem.Clear();
+            if (cboLop.Items.Count > 0)
+            {
+                cboLop.SelectedIndex = 0;
+            }
+            dangKhoiTao = false;
+
+            HienThiDanhSachDocGia();
             LamMoiNhapLieu();
             txtMaDocGia.Focus();
+        }
+
+        // ================= XUẤT CSV (YÊU CẦU CHUNG SỐ 6) =================
+
+        // Xuất danh sách độc giả ĐANG HIỂN THỊ trên ListView ra file .csv (UTF-8)
+        private void btnXuatCSV_Click(object sender, EventArgs e)
+        {
+            if (lvDocGia.Items.Count == 0)
+            {
+                MessageBox.Show("Không có dữ liệu độc giả để xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Title = "Xuất danh sách độc giả ra file CSV";
+                sfd.Filter = "Tập tin CSV (*.csv)|*.csv|Tất cả tập tin (*.*)|*.*";
+                sfd.FileName = "danh sach doc gia.csv";
+
+                if (sfd.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    // UTF-8 có BOM để Excel mở không lỗi tiếng Việt
+                    using (StreamWriter sw = new StreamWriter(sfd.FileName, false, new UTF8Encoding(true)))
+                    {
+                        sw.WriteLine("Ma,HoTen,Lop,NgayHetHan,TrangThai");
+
+                        foreach (ListViewItem item in lvDocGia.Items)
+                        {
+                            string dong = TaoCSV(item.Text) + "," +
+                                          TaoCSV(item.SubItems[1].Text) + "," +
+                                          TaoCSV(item.SubItems[2].Text) + "," +
+                                          TaoCSV(item.SubItems[3].Text) + "," +
+                                          TaoCSV(item.SubItems[4].Text);
+                            sw.WriteLine(dong);
+                        }
+                    }
+
+                    MessageBox.Show("Đã xuất " + lvDocGia.Items.Count + " độc giả ra file:\n" + sfd.FileName,
+                        "Xuất CSV thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi xuất CSV: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DuLieuChung.GhiLog("Lỗi xuất CSV độc giả: " + ex.Message);
+                }
+            }
+        }
+
+        // Escape 1 trường dữ liệu theo chuẩn CSV
+        private string TaoCSV(string giaTri)
+        {
+            if (giaTri.Contains(",") || giaTri.Contains("\"") || giaTri.Contains(";"))
+            {
+                return "\"" + giaTri.Replace("\"", "\"\"") + "\"";
+            }
+            return giaTri;
+        }
+
+        // ================= IN THẺ ĐỘC GIẢ (ĐIỂM CỘNG) =================
+
+        // Xuất thông tin chi tiết 1 độc giả đang chọn ra file .txt dạng khung thẻ thư viện
+        private void btnInThe_Click(object sender, EventArgs e)
+        {
+            if (lvDocGia.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn 1 độc giả trên danh sách để in thẻ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DocGia dg = (DocGia)lvDocGia.SelectedItems[0].Tag;
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Title = "In thẻ độc giả";
+                sfd.Filter = "Tập tin văn bản (*.txt)|*.txt";
+                sfd.FileName = "the doc gia " + dg.Ma + ".txt";
+
+                if (sfd.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    int rong = 56; // chiều rộng bên trong khung thẻ
+                    StringBuilder sb = new StringBuilder();
+                    string vien = "+" + new string('-', rong) + "+";
+
+                    sb.AppendLine(vien);
+                    sb.AppendLine("|" + CanGiua("THẺ ĐỘC GIẢ - THƯ VIỆN ĐẠI HỌC", rong) + "|");
+                    sb.AppendLine(vien);
+                    ThemDongThe(sb, "Mã độc giả", dg.Ma, rong);
+                    ThemDongThe(sb, "Họ và tên", dg.HoTen, rong);
+                    ThemDongThe(sb, "Lớp", dg.Lop, rong);
+                    ThemDongThe(sb, "Ngày hết hạn", dg.NgayHetHan.ToString("dd/MM/yyyy"), rong);
+                    ThemDongThe(sb, "Trạng thái", dg.TrangThai, rong);
+
+                    // Tính tình trạng thẻ theo ngày hiện tại
+                    int soNgayConLai = (dg.NgayHetHan.Date - DateTime.Now.Date).Days;
+                    string tinhTrang;
+                    if (dg.TrangThai == "BiKhoa")
+                    {
+                        tinhTrang = "Thẻ bị khóa";
+                    }
+                    else if (soNgayConLai < 0)
+                    {
+                        tinhTrang = "ĐÃ HẾT HẠN";
+                    }
+                    else if (soNgayConLai < 7)
+                    {
+                        tinhTrang = "SẮP HẾT HẠN (còn " + soNgayConLai + " ngày)";
+                    }
+                    else
+                    {
+                        tinhTrang = "Còn " + soNgayConLai + " ngày sử dụng";
+                    }
+                    ThemDongThe(sb, "Tình trạng", tinhTrang, rong);
+
+                    sb.AppendLine(vien);
+                    ThemDongThe(sb, "Ngày in", DateTime.Now.ToString("dd/MM/yyyy HH:mm"), rong);
+                    sb.AppendLine(vien);
+
+                    using (StreamWriter sw = new StreamWriter(sfd.FileName, false, new UTF8Encoding(true)))
+                    {
+                        sw.Write(sb.ToString());
+                    }
+
+                    MessageBox.Show("Đã xuất thẻ độc giả ra file:\n" + sfd.FileName,
+                        "In thẻ thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi in thẻ: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DuLieuChung.GhiLog("Lỗi in thẻ độc giả " + dg.Ma + ": " + ex.Message);
+                }
+            }
+        }
+
+        // Thêm 1 dòng thông tin vào khung thẻ (căn cột cho đều)
+        private void ThemDongThe(StringBuilder sb, string tenNhan, string noiDung, int rong)
+        {
+            int toiDa = rong - 19;
+            if (noiDung.Length > toiDa)
+            {
+                noiDung = noiDung.Substring(0, toiDa - 3) + "...";
+            }
+            string dong = "|  " + (tenNhan + ":").PadRight(16) + noiDung;
+            sb.AppendLine(dong.PadRight(rong + 1) + "|");
+        }
+
+        // Căn giữa 1 chuỗi trong khung thẻ có chiều rộng cho trước
+        private string CanGiua(string chuoi, int rong)
+        {
+            if (chuoi.Length >= rong)
+            {
+                return chuoi.Substring(0, rong);
+            }
+            int le = (rong - chuoi.Length) / 2;
+            return new string(' ', le) + chuoi + new string(' ', rong - chuoi.Length - le);
         }
     }
 }

@@ -52,6 +52,7 @@ namespace Library_Management
             this.lblLocLop = new System.Windows.Forms.Label();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.lblTimKiem = new System.Windows.Forms.Label();
+            this.lblChuThich = new System.Windows.Forms.Label();
             this.pnlTrai.SuspendLayout();
             this.grpThaoTac.SuspendLayout();
             this.grpThongTin.SuspendLayout();
@@ -105,6 +106,7 @@ namespace Library_Management
             this.btnXuatCSV.TabIndex = 6;
             this.btnXuatCSV.Text = "📤 Xuất CSV";
             this.btnXuatCSV.UseVisualStyleBackColor = false;
+            this.btnXuatCSV.Click += new System.EventHandler(this.btnXuatCSV_Click);
             // 
             // btnInThe
             // 
@@ -120,6 +122,7 @@ namespace Library_Management
             this.btnInThe.TabIndex = 7;
             this.btnInThe.Text = "🖨️ In thẻ .txt";
             this.btnInThe.UseVisualStyleBackColor = false;
+            this.btnInThe.Click += new System.EventHandler(this.btnInThe_Click);
             // 
             // btnLamMoi
             // 
@@ -355,6 +358,7 @@ namespace Library_Management
             // 
             this.pnlPhai.Controls.Add(this.grpDanhSach);
             this.pnlPhai.Controls.Add(this.pnlTimKiem);
+            this.pnlPhai.Controls.Add(this.lblChuThich);
             this.pnlPhai.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlPhai.Location = new System.Drawing.Point(340, 0);
             this.pnlPhai.Name = "pnlPhai";
@@ -453,6 +457,7 @@ namespace Library_Management
             this.btnTatCa.TabIndex = 5;
             this.btnTatCa.Text = "Hiện tất cả";
             this.btnTatCa.UseVisualStyleBackColor = false;
+            this.btnTatCa.Click += new System.EventHandler(this.btnTatCa_Click);
             // 
             // btnTimKiem
             // 
@@ -468,6 +473,7 @@ namespace Library_Management
             this.btnTimKiem.TabIndex = 2;
             this.btnTimKiem.Text = "🔍 Tìm";
             this.btnTimKiem.UseVisualStyleBackColor = false;
+            this.btnTimKiem.Click += new System.EventHandler(this.btnTimKiem_Click);
             // 
             // cboLop
             // 
@@ -478,6 +484,7 @@ namespace Library_Management
             this.cboLop.Name = "cboLop";
             this.cboLop.Size = new System.Drawing.Size(140, 24);
             this.cboLop.TabIndex = 4;
+            this.cboLop.SelectedIndexChanged += new System.EventHandler(this.cboLop_SelectedIndexChanged);
             // 
             // lblLocLop
             // 
@@ -496,6 +503,8 @@ namespace Library_Management
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.Size = new System.Drawing.Size(200, 25);
             this.txtTimKiem.TabIndex = 1;
+            this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
+            this.txtTimKiem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimKiem_KeyDown);
             // 
             // lblTimKiem
             // 
@@ -506,6 +515,18 @@ namespace Library_Management
             this.lblTimKiem.Size = new System.Drawing.Size(126, 17);
             this.lblTimKiem.TabIndex = 0;
             this.lblTimKiem.Text = "Tìm theo tên ĐG:";
+            // 
+            // lblChuThich
+            // 
+            this.lblChuThich.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblChuThich.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblChuThich.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.lblChuThich.Location = new System.Drawing.Point(8, 651);
+            this.lblChuThich.Name = "lblChuThich";
+            this.lblChuThich.Size = new System.Drawing.Size(828, 22);
+            this.lblChuThich.TabIndex = 2;
+            this.lblChuThich.Text = "CẢNH BÁO MÀU:  HỒNG = thẻ đã hết hạn hoặc bị khóa   |   VÀNG = thẻ sắp hết hạn (còn dưới 7 ngày)";
+            this.lblChuThich.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // FrmDocGia
             // 
@@ -570,5 +591,6 @@ namespace Library_Management
         private System.Windows.Forms.ColumnHeader colLop;
         private System.Windows.Forms.ColumnHeader colNgayHetHan;
         private System.Windows.Forms.ColumnHeader colTrangThai;
+        private System.Windows.Forms.Label lblChuThich;
     }
 }
