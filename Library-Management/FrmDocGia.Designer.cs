@@ -253,7 +253,7 @@ namespace Library_Management
             "BiKhoa"});
             this.cboTrangThai.Location = new System.Drawing.Point(95, 169);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(210, 24);
+            this.cboTrangThai.Size = new System.Drawing.Size(210, 29);
             this.cboTrangThai.TabIndex = 10;
             // 
             // lblTrangThai
@@ -263,7 +263,7 @@ namespace Library_Management
             this.lblTrangThai.ForeColor = System.Drawing.Color.Black;
             this.lblTrangThai.Location = new System.Drawing.Point(15, 172);
             this.lblTrangThai.Name = "lblTrangThai";
-            this.lblTrangThai.Size = new System.Drawing.Size(72, 17);
+            this.lblTrangThai.Size = new System.Drawing.Size(82, 21);
             this.lblTrangThai.TabIndex = 9;
             this.lblTrangThai.Text = "Trạng thái:";
             // 
@@ -274,7 +274,7 @@ namespace Library_Management
             this.lblGoiNgay.ForeColor = System.Drawing.Color.Gray;
             this.lblGoiNgay.Location = new System.Drawing.Point(241, 137);
             this.lblGoiNgay.Name = "lblGoiNgay";
-            this.lblGoiNgay.Size = new System.Drawing.Size(77, 15);
+            this.lblGoiNgay.Size = new System.Drawing.Size(103, 20);
             this.lblGoiNgay.TabIndex = 8;
             this.lblGoiNgay.Text = "(dd/MM/yyyy)";
             // 
@@ -283,7 +283,7 @@ namespace Library_Management
             this.txtNgayHetHan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.txtNgayHetHan.Location = new System.Drawing.Point(95, 134);
             this.txtNgayHetHan.Name = "txtNgayHetHan";
-            this.txtNgayHetHan.Size = new System.Drawing.Size(140, 24);
+            this.txtNgayHetHan.Size = new System.Drawing.Size(140, 29);
             this.txtNgayHetHan.TabIndex = 7;
             // 
             // lblNgayHetHan
@@ -293,7 +293,7 @@ namespace Library_Management
             this.lblNgayHetHan.ForeColor = System.Drawing.Color.Black;
             this.lblNgayHetHan.Location = new System.Drawing.Point(15, 137);
             this.lblNgayHetHan.Name = "lblNgayHetHan";
-            this.lblNgayHetHan.Size = new System.Drawing.Size(70, 17);
+            this.lblNgayHetHan.Size = new System.Drawing.Size(67, 21);
             this.lblNgayHetHan.TabIndex = 6;
             this.lblNgayHetHan.Text = "Hạn thẻ:";
             // 
@@ -302,7 +302,7 @@ namespace Library_Management
             this.txtLop.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.txtLop.Location = new System.Drawing.Point(95, 99);
             this.txtLop.Name = "txtLop";
-            this.txtLop.Size = new System.Drawing.Size(210, 24);
+            this.txtLop.Size = new System.Drawing.Size(210, 29);
             this.txtLop.TabIndex = 5;
             // 
             // lblLop
@@ -312,7 +312,7 @@ namespace Library_Management
             this.lblLop.ForeColor = System.Drawing.Color.Black;
             this.lblLop.Location = new System.Drawing.Point(15, 102);
             this.lblLop.Name = "lblLop";
-            this.lblLop.Size = new System.Drawing.Size(38, 17);
+            this.lblLop.Size = new System.Drawing.Size(40, 21);
             this.lblLop.TabIndex = 4;
             this.lblLop.Text = "Lớp:";
             // 
@@ -321,7 +321,7 @@ namespace Library_Management
             this.txtHoTen.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.txtHoTen.Location = new System.Drawing.Point(95, 64);
             this.txtHoTen.Name = "txtHoTen";
-            this.txtHoTen.Size = new System.Drawing.Size(210, 24);
+            this.txtHoTen.Size = new System.Drawing.Size(210, 29);
             this.txtHoTen.TabIndex = 3;
             // 
             // lblHoTen
@@ -331,7 +331,7 @@ namespace Library_Management
             this.lblHoTen.ForeColor = System.Drawing.Color.Black;
             this.lblHoTen.Location = new System.Drawing.Point(15, 67);
             this.lblHoTen.Name = "lblHoTen";
-            this.lblHoTen.Size = new System.Drawing.Size(68, 17);
+            this.lblHoTen.Size = new System.Drawing.Size(79, 21);
             this.lblHoTen.TabIndex = 2;
             this.lblHoTen.Text = "Họ và tên:";
             // 
@@ -340,7 +340,7 @@ namespace Library_Management
             this.txtMaDocGia.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.txtMaDocGia.Location = new System.Drawing.Point(95, 29);
             this.txtMaDocGia.Name = "txtMaDocGia";
-            this.txtMaDocGia.Size = new System.Drawing.Size(210, 24);
+            this.txtMaDocGia.Size = new System.Drawing.Size(210, 29);
             this.txtMaDocGia.TabIndex = 1;
             // 
             // lblMaDocGia
@@ -350,7 +350,7 @@ namespace Library_Management
             this.lblMaDocGia.ForeColor = System.Drawing.Color.Black;
             this.lblMaDocGia.Location = new System.Drawing.Point(15, 32);
             this.lblMaDocGia.Name = "lblMaDocGia";
-            this.lblMaDocGia.Size = new System.Drawing.Size(57, 17);
+            this.lblMaDocGia.Size = new System.Drawing.Size(61, 21);
             this.lblMaDocGia.TabIndex = 0;
             this.lblMaDocGia.Text = "Mã ĐG:";
             // 
@@ -375,7 +375,7 @@ namespace Library_Management
             this.grpDanhSach.Location = new System.Drawing.Point(8, 53);
             this.grpDanhSach.Name = "grpDanhSach";
             this.grpDanhSach.Padding = new System.Windows.Forms.Padding(6);
-            this.grpDanhSach.Size = new System.Drawing.Size(828, 620);
+            this.grpDanhSach.Size = new System.Drawing.Size(828, 598);
             this.grpDanhSach.TabIndex = 1;
             this.grpDanhSach.TabStop = false;
             this.grpDanhSach.Text = "DANH SÁCH ĐỘC GIẢ";
@@ -393,10 +393,10 @@ namespace Library_Management
             this.lvDocGia.FullRowSelect = true;
             this.lvDocGia.GridLines = true;
             this.lvDocGia.HideSelection = false;
-            this.lvDocGia.Location = new System.Drawing.Point(6, 24);
+            this.lvDocGia.Location = new System.Drawing.Point(6, 29);
             this.lvDocGia.MultiSelect = false;
             this.lvDocGia.Name = "lvDocGia";
-            this.lvDocGia.Size = new System.Drawing.Size(816, 590);
+            this.lvDocGia.Size = new System.Drawing.Size(816, 563);
             this.lvDocGia.TabIndex = 0;
             this.lvDocGia.UseCompatibleStateImageBehavior = false;
             this.lvDocGia.View = System.Windows.Forms.View.Details;
@@ -482,7 +482,7 @@ namespace Library_Management
             this.cboLop.FormattingEnabled = true;
             this.cboLop.Location = new System.Drawing.Point(568, 10);
             this.cboLop.Name = "cboLop";
-            this.cboLop.Size = new System.Drawing.Size(140, 24);
+            this.cboLop.Size = new System.Drawing.Size(140, 29);
             this.cboLop.TabIndex = 4;
             this.cboLop.SelectedIndexChanged += new System.EventHandler(this.cboLop_SelectedIndexChanged);
             // 
@@ -492,7 +492,7 @@ namespace Library_Management
             this.lblLocLop.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblLocLop.Location = new System.Drawing.Point(452, 14);
             this.lblLocLop.Name = "lblLocLop";
-            this.lblLocLop.Size = new System.Drawing.Size(110, 17);
+            this.lblLocLop.Size = new System.Drawing.Size(108, 21);
             this.lblLocLop.TabIndex = 3;
             this.lblLocLop.Text = "Lọc theo lớp:";
             // 
@@ -501,7 +501,7 @@ namespace Library_Management
             this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtTimKiem.Location = new System.Drawing.Point(140, 10);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(200, 25);
+            this.txtTimKiem.Size = new System.Drawing.Size(200, 30);
             this.txtTimKiem.TabIndex = 1;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             this.txtTimKiem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimKiem_KeyDown);
@@ -512,7 +512,7 @@ namespace Library_Management
             this.lblTimKiem.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTimKiem.Location = new System.Drawing.Point(8, 14);
             this.lblTimKiem.Name = "lblTimKiem";
-            this.lblTimKiem.Size = new System.Drawing.Size(126, 17);
+            this.lblTimKiem.Size = new System.Drawing.Size(138, 21);
             this.lblTimKiem.TabIndex = 0;
             this.lblTimKiem.Text = "Tìm theo tên ĐG:";
             // 
@@ -525,12 +525,13 @@ namespace Library_Management
             this.lblChuThich.Name = "lblChuThich";
             this.lblChuThich.Size = new System.Drawing.Size(828, 22);
             this.lblChuThich.TabIndex = 2;
-            this.lblChuThich.Text = "CẢNH BÁO MÀU:  HỒNG = thẻ đã hết hạn hoặc bị khóa   |   VÀNG = thẻ sắp hết hạn (còn dưới 7 ngày)";
+            this.lblChuThich.Text = "CẢNH BÁO MÀU:  HỒNG = thẻ đã hết hạn hoặc bị khóa   |   VÀNG = thẻ sắp hết hạn (c" +
+    "òn dưới 7 ngày)";
             this.lblChuThich.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // FrmDocGia
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1184, 681);
