@@ -20,6 +20,10 @@ namespace Library_Management
             this.mnuHeThong = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDangXuat = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuChonMauNen = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuChonPhonChu = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuDatLaiGiaoDien = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuThoat = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuQuanLy = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSach = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,6 +69,10 @@ namespace Library_Management
             this.mnuHeThong.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuDangXuat,
             this.toolStripSeparator1,
+            this.mnuChonMauNen,
+            this.mnuChonPhonChu,
+            this.mnuDatLaiGiaoDien,
+            this.toolStripSeparator3,
             this.mnuThoat});
             this.mnuHeThong.Name = "mnuHeThong";
             this.mnuHeThong.Size = new System.Drawing.Size(79, 23);
@@ -90,6 +98,32 @@ namespace Library_Management
             this.mnuThoat.Size = new System.Drawing.Size(193, 24);
             this.mnuThoat.Text = "&Thoát";
             this.mnuThoat.Click += new System.EventHandler(this.mnuThoat_Click);
+            // 
+            // mnuChonMauNen
+            // 
+            this.mnuChonMauNen.Name = "mnuChonMauNen";
+            this.mnuChonMauNen.Size = new System.Drawing.Size(193, 24);
+            this.mnuChonMauNen.Text = "Chọn &màu nền...";
+            this.mnuChonMauNen.Click += new System.EventHandler(this.mnuChonMauNen_Click);
+            // 
+            // mnuChonPhonChu
+            // 
+            this.mnuChonPhonChu.Name = "mnuChonPhonChu";
+            this.mnuChonPhonChu.Size = new System.Drawing.Size(193, 24);
+            this.mnuChonPhonChu.Text = "Chọn &phông chữ...";
+            this.mnuChonPhonChu.Click += new System.EventHandler(this.mnuChonPhonChu_Click);
+            // 
+            // mnuDatLaiGiaoDien
+            // 
+            this.mnuDatLaiGiaoDien.Name = "mnuDatLaiGiaoDien";
+            this.mnuDatLaiGiaoDien.Size = new System.Drawing.Size(193, 24);
+            this.mnuDatLaiGiaoDien.Text = "Đặt lại giao diện &mặc định";
+            this.mnuDatLaiGiaoDien.Click += new System.EventHandler(this.mnuDatLaiGiaoDien_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(190, 6);
             // 
             // mnuQuanLy
             // 
@@ -270,6 +304,10 @@ namespace Library_Management
         private System.Windows.Forms.ToolStripMenuItem mnuHeThong;
         private System.Windows.Forms.ToolStripMenuItem mnuDangXuat;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem mnuChonMauNen;
+        private System.Windows.Forms.ToolStripMenuItem mnuChonPhonChu;
+        private System.Windows.Forms.ToolStripMenuItem mnuDatLaiGiaoDien;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem mnuThoat;
         private System.Windows.Forms.ToolStripMenuItem mnuQuanLy;
         private System.Windows.Forms.ToolStripMenuItem mnuSach;

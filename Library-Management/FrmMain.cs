@@ -1,18 +1,40 @@
 using System;
 using System.Configuration;
+using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace Library_Management
 {
     public partial class FrmMain : Form
     {
+        // ================= TÙY CHỈNH GIAO DIỆN (COLOR / FONT DIALOG + REGISTRY) =================
+
+        // Khóa lưu giao diện trong Registry: HKEY_CURRENT_USER\Software\LibraryManagement\GiaoDien
+        private const string KhoaRegistry = @"Software\LibraryManagement\GiaoDien";
+
+        // Màu nền và phông chữ mặc định của chương trình
+        private readonly Color mauNenMacDinh = Color.White;
+        private readonly Font fontMacDinh = new Font("Segoe UI", 9.5F);
+
+        // Màu nền và phông chữ đang được áp dụng hiện tại
+        private Color mauNenHienTai;
+        private Font fontHienTai;
+
         public FrmMain()
         {
             InitializeComponent();
+
+            mauNenHienTai = mauNenMacDinh;
+            fontHienTai = fontMacDinh;
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            // 0. Tải màu nền, phông chữ, kích thước và vị trí cửa sổ đã lưu ở lần mở trước
+            TaiGiaoDienTuRegistry();
+
             // 1. Đọc tên thư viện từ App.config và gán vào StatusStrip
             string tenThuVien = ConfigurationManager.AppSettings["TenThuVien"];
             if (!string.IsNullOrEmpty(tenThuVien))
@@ -62,8 +84,10 @@ namespace Library_Management
                 }
             }
 
-            // Chưa mở thì thiết lập Form cha MDI và hiển thị
+            // Chưa mở thì thiết lập Form cha MDI, áp dụng giao diện đang chọn và hiển thị
             formCon.MdiParent = this;
+            formCon.BackColor = mauNenHienTai;
+            ApDungFontTrenControl(formCon, fontHienTai);
             formCon.Show();
         }
 
@@ -155,6 +179,227 @@ namespace Library_Management
                 {
                     e.Cancel = true;
                 }
+            }
+
+            // Lưu màu nền, phông chữ, kích thước và vị trí cửa sổ vào Registry
+            if (!e.Cancel)
+            {
+                LuuGiaoDienLenRegistry();
+            }
+        }
+
+        // ================= CHỨC NĂNG CHỌN MÀU NỀN VÀ PHÔNG CHỮ =================
+
+        // Chọn màu nền cho chương trình bằng ColorDialog
+        private void mnuChonMauNen_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog cd = new ColorDialog())
+            {
+                cd.Color = mauNenHienTai;
+                cd.FullOpen = true;
+
+                if (cd.ShowDialog() == DialogResult.OK)
+                {
+                    ApDungMauNen(cd.Color);
+                    LuuGiaoDienLenRegistry();
+                }
+            }
+        }
+
+        // Chọn phông chữ cho chương trình bằng FontDialog
+        private void mnuChonPhonChu_Click(object sender, EventArgs e)
+        {
+            using (FontDialog fd = new FontDialog())
+            {
+                fd.Font = fontHienTai;
+                fd.ShowColor = false;
+
+                if (fd.ShowDialog() == DialogResult.OK)
+                {
+                    // Tạo 1 bản sao Font mới để không phụ thuộc vào FontDialog
+                    Font phMoi = new Font(fd.Font.FontFamily, fd.Font.Size, fd.Font.Style, fd.Font.Unit);
+                    ApDungFont(phMoi);
+                    LuuGiaoDienLenRegistry();
+                }
+            }
+        }
+
+        // Đặt lại màu nền và phông chữ về trạng thái mặc định
+        private void mnuDatLaiGiaoDien_Click(object sender, EventArgs e)
+        {
+            ApDungMauNen(mauNenMacDinh);
+            ApDungFont(fontMacDinh);
+            LuuGiaoDienLenRegistry();
+
+            MessageBox.Show("Đã đặt lại màu nền và phông chữ về trạng thái mặc định!",
+                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // Áp dụng màu nền cho cửa sổ chính và các cửa sổ con đang mở
+        private void ApDungMauNen(Color mau)
+        {
+            mauNenHienTai = mau;
+            this.BackColor = mau;
+
+            foreach (Form child in this.MdiChildren)
+            {
+                child.BackColor = mau;
+            }
+        }
+
+        // Áp dụng phông chữ cho 1 control và toàn bộ control con của nó (đệ quy)
+        private void ApDungFontTrenControl(Control cha, Font ph)
+        {
+            if (cha == null || ph == null)
+            {
+                return;
+            }
+
+            cha.Font = ph;
+            foreach (Control con in cha.Controls)
+            {
+                ApDungFontTrenControl(con, ph);
+            }
+        }
+
+        // Áp dụng phông chữ cho cửa sổ chính, menu, thanh trạng thái và các cửa sổ con
+        private void ApDungFont(Font ph)
+        {
+            fontHienTai = ph;
+            ApDungFontTrenControl(this, ph);
+
+            foreach (Form child in this.MdiChildren)
+            {
+                ApDungFontTrenControl(child, ph);
+            }
+        }
+
+        // ================= LƯU / TẢI GIAO DIỆN TỪ REGISTRY =================
+
+        // Tải màu nền, phông chữ, kích thước và vị trí cửa sổ từ Registry (lần mở app)
+        private void TaiGiaoDienTuRegistry()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(KhoaRegistry))
+                {
+                    if (key == null)
+                    {
+                        return; // Chưa từng lưu -> giữ nguyên giao diện mặc định
+                    }
+
+                    // 1. Màu nền (lưu dạng số ARGB)
+                    object giaTriMau = key.GetValue("MauNen");
+                    if (giaTriMau != null)
+                    {
+                        ApDungMauNen(Color.FromArgb(Convert.ToInt32(giaTriMau)));
+                    }
+
+                    // 2. Phông chữ (tên phông + cỡ chữ)
+                    string tenFont = key.GetValue("FontFamily") as string;
+                    float kichThuoc = 0;
+                    object giaTriSize = key.GetValue("FontSize");
+                    if (giaTriSize != null)
+                    {
+                        float.TryParse(giaTriSize.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out kichThuoc);
+                    }
+
+                    // Chỉ áp dụng nếu máy vẫn còn cài phông chữ đó
+                    bool fontTonTai = false;
+                    if (!string.IsNullOrEmpty(tenFont) && kichThuoc > 0)
+                    {
+                        foreach (FontFamily ff in FontFamily.Families)
+                        {
+                            if (ff.Name == tenFont)
+                            {
+                                fontTonTai = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (fontTonTai)
+                    {
+                        ApDungFont(new Font(tenFont, kichThuoc));
+                    }
+
+                    // 3. Kích thước và vị trí cửa sổ
+                    object oX = key.GetValue("CuaSoX");
+                    object oY = key.GetValue("CuaSoY");
+                    object oRong = key.GetValue("CuaSoRong");
+                    object oCao = key.GetValue("CuaSoCao");
+
+                    if (oX != null && oY != null && oRong != null && oCao != null)
+                    {
+                        int x, y, rong, cao;
+                        if (int.TryParse(oX.ToString(), out x) &&
+                            int.TryParse(oY.ToString(), out y) &&
+                            int.TryParse(oRong.ToString(), out rong) &&
+                            int.TryParse(oCao.ToString(), out cao) &&
+                            rong >= 400 && cao >= 300)
+                        {
+                            // Chỉ áp dụng nếu cửa sổ vẫn nằm trên 1 màn hình nào đó
+                            Rectangle goc = new Rectangle(x, y, rong, cao);
+                            bool trenManHinh = false;
+                            foreach (Screen sc in Screen.AllScreens)
+                            {
+                                if (sc.WorkingArea.IntersectsWith(goc))
+                                {
+                                    trenManHinh = true;
+                                    break;
+                                }
+                            }
+
+                            if (trenManHinh)
+                            {
+                                this.StartPosition = FormStartPosition.Manual;
+                                this.Bounds = goc;
+                            }
+                        }
+                    }
+
+                    // 4. Trạng thái thu nhỏ / phóng to cửa sổ
+                    int trangThai = 0;
+                    object oTrangThai = key.GetValue("CuaSoTrangThai");
+                    if (oTrangThai != null)
+                    {
+                        int.TryParse(oTrangThai.ToString(), out trangThai);
+                    }
+                    if (trangThai == 1)
+                    {
+                        this.WindowState = FormWindowState.Maximized;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DuLieuChung.GhiLog("Lỗi tải giao diện từ Registry: " + ex.Message);
+            }
+        }
+
+        // Lưu màu nền, phông chữ, kích thước và vị trí cửa sổ vào Registry
+        private void LuuGiaoDienLenRegistry()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(KhoaRegistry))
+                {
+                    key.SetValue("MauNen", mauNenHienTai.ToArgb(), RegistryValueKind.DWord);
+                    key.SetValue("FontFamily", fontHienTai.FontFamily.Name, RegistryValueKind.String);
+                    key.SetValue("FontSize", fontHienTai.Size.ToString(CultureInfo.InvariantCulture), RegistryValueKind.String);
+
+                    // Đang phóng to thì lưu kích thước lúc thu nhỏ (RestoreBounds)
+                    Rectangle goc = (this.WindowState == FormWindowState.Normal) ? this.Bounds : this.RestoreBounds;
+
+                    key.SetValue("CuaSoX", goc.X, RegistryValueKind.DWord);
+                    key.SetValue("CuaSoY", goc.Y, RegistryValueKind.DWord);
+                    key.SetValue("CuaSoRong", goc.Width, RegistryValueKind.DWord);
+                    key.SetValue("CuaSoCao", goc.Height, RegistryValueKind.DWord);
+                    key.SetValue("CuaSoTrangThai", this.WindowState == FormWindowState.Maximized ? 1 : 0, RegistryValueKind.DWord);
+                }
+            }
+            catch (Exception ex)
+            {
+                DuLieuChung.GhiLog("Lỗi lưu giao diện vào Registry: " + ex.Message);
             }
         }
     }
