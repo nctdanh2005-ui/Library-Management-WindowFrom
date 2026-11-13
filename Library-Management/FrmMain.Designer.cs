@@ -30,7 +30,10 @@ namespace Library_Management
             this.mnuDocGia = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMuonTra = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuQuanTri = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuCauHinhHeThong = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuQuanLyTaiKhoan = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCaiDatThamSo = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparatorAdmin = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuXemNhatKyLoi = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCuaSo = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCascade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTileHorizontal = new System.Windows.Forms.ToolStripMenuItem();
@@ -162,17 +165,41 @@ namespace Library_Management
             // mnuQuanTri
             // 
             this.mnuQuanTri.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuCauHinhHeThong});
+            this.mnuQuanLyTaiKhoan,
+            this.mnuCaiDatThamSo,
+            this.toolStripSeparatorAdmin,
+            this.mnuXemNhatKyLoi});
             this.mnuQuanTri.Name = "mnuQuanTri";
             this.mnuQuanTri.Size = new System.Drawing.Size(130, 23);
             this.mnuQuanTri.Text = "Quản &trị hệ thống";
             // 
-            // mnuCauHinhHeThong
+            // mnuQuanLyTaiKhoan
             // 
-            this.mnuCauHinhHeThong.Name = "mnuCauHinhHeThong";
-            this.mnuCauHinhHeThong.Size = new System.Drawing.Size(225, 24);
-            this.mnuCauHinhHeThong.Text = "Cấu hình & phân quyền";
-            this.mnuCauHinhHeThong.Click += new System.EventHandler(this.mnuCauHinhHeThong_Click);
+            this.mnuQuanLyTaiKhoan.Name = "mnuQuanLyTaiKhoan";
+            this.mnuQuanLyTaiKhoan.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
+            this.mnuQuanLyTaiKhoan.Size = new System.Drawing.Size(265, 24);
+            this.mnuQuanLyTaiKhoan.Text = "Quản lý &Tài khoản người dùng";
+            this.mnuQuanLyTaiKhoan.Click += new System.EventHandler(this.mnuQuanLyTaiKhoan_Click);
+            // 
+            // mnuCaiDatThamSo
+            // 
+            this.mnuCaiDatThamSo.Name = "mnuCaiDatThamSo";
+            this.mnuCaiDatThamSo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.mnuCaiDatThamSo.Size = new System.Drawing.Size(265, 24);
+            this.mnuCaiDatThamSo.Text = "Cài đặt &Tham số hệ thống";
+            this.mnuCaiDatThamSo.Click += new System.EventHandler(this.mnuCaiDatThamSo_Click);
+            // 
+            // toolStripSeparatorAdmin
+            // 
+            this.toolStripSeparatorAdmin.Name = "toolStripSeparatorAdmin";
+            this.toolStripSeparatorAdmin.Size = new System.Drawing.Size(262, 6);
+            // 
+            // mnuXemNhatKyLoi
+            // 
+            this.mnuXemNhatKyLoi.Name = "mnuXemNhatKyLoi";
+            this.mnuXemNhatKyLoi.Size = new System.Drawing.Size(265, 24);
+            this.mnuXemNhatKyLoi.Text = "Xem &Nhật ký lỗi hệ thống (log.txt)";
+            this.mnuXemNhatKyLoi.Click += new System.EventHandler(this.mnuXemNhatKyLoi_Click);
             // 
             // mnuCuaSo
             // 
@@ -314,7 +341,10 @@ namespace Library_Management
         private System.Windows.Forms.ToolStripMenuItem mnuDocGia;
         private System.Windows.Forms.ToolStripMenuItem mnuMuonTra;
         private System.Windows.Forms.ToolStripMenuItem mnuQuanTri;
-        private System.Windows.Forms.ToolStripMenuItem mnuCauHinhHeThong;
+        private System.Windows.Forms.ToolStripMenuItem mnuQuanLyTaiKhoan;
+        private System.Windows.Forms.ToolStripMenuItem mnuCaiDatThamSo;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparatorAdmin;
+        private System.Windows.Forms.ToolStripMenuItem mnuXemNhatKyLoi;
         private System.Windows.Forms.ToolStripMenuItem mnuCuaSo;
         private System.Windows.Forms.ToolStripMenuItem mnuCascade;
         private System.Windows.Forms.ToolStripMenuItem mnuTileHorizontal;

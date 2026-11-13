@@ -48,13 +48,15 @@ namespace Library_Management
                 lblNguoiDung.Text = "Người dùng: " + DuLieuChung.NguoiDungHienTai.TaiKhoan + 
                                     " (" + (DuLieuChung.NguoiDungHienTai.VaiTro == "QuanTri" ? "Quản trị viên" : "Nhân viên") + ")";
 
-                // 3. Phân quyền người dùng: Nhân viên thì vô hiệu hóa mục Quản trị hệ thống
+                // 3. Phân quyền người dùng: Nhân viên thì ẩn và vô hiệu hóa mục Quản trị hệ thống
                 if (DuLieuChung.NguoiDungHienTai.VaiTro == "NhanVien")
                 {
+                    mnuQuanTri.Visible = false;
                     mnuQuanTri.Enabled = false;
                 }
                 else
                 {
+                    mnuQuanTri.Visible = true;
                     mnuQuanTri.Enabled = true;
                 }
             }
@@ -109,16 +111,43 @@ namespace Library_Management
             MoFormCon(new FrmMuonTra());
         }
 
-        // Chức năng quản trị hệ thống
-        private void mnuCauHinhHeThong_Click(object sender, EventArgs e)
+        // Mở Form Quản lý tài khoản (Chỉ Quản trị viên)
+        private void mnuQuanLyTaiKhoan_Click(object sender, EventArgs e)
         {
-            string thongTin = "CẤU HÌNH HỆ THỐNG HIỆN TẠI:\n\n" +
-                              "- Tên thư viện: " + ConfigurationManager.AppSettings["TenThuVien"] + "\n" +
-                              "- Thư mục dữ liệu: " + ConfigurationManager.AppSettings["ThuMucData"] + "\n" +
-                              "- Tiền phạt mỗi ngày quá hạn: " + ConfigurationManager.AppSettings["TienPhatMoiNgay"] + " VNĐ\n" +
-                              "- Tổng số đầu sách: " + DuLieuChung.DanhSachSach.Count + "\n" +
-                              "- Tổng số độc giả: " + DuLieuChung.DanhSachDocGia.Count;
-            MessageBox.Show(thongTin, "Quản trị hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MoFormCon(new FrmQuanLyTaiKhoan());
+        }
+
+        // Mở Form Cài đặt tham số hệ thống (Chỉ Quản trị viên)
+        private void mnuCaiDatThamSo_Click(object sender, EventArgs e)
+        {
+            using (FrmCaiDatHeThong f = new FrmCaiDatHeThong())
+            {
+                if (f.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Cập nhật lại tên thư viện trên thanh trạng thái ngay lập tức
+                    lblTenThuVien.Text = ConfigurationManager.AppSettings["TenThuVien"];
+                }
+            }
+        }
+
+        // Xem file nhật ký lỗi log.txt (Chỉ Quản trị viên)
+        private void mnuXemNhatKyLoi_Click(object sender, EventArgs e)
+        {
+            string duongDanLog = System.IO.Path.Combine(DuLieuChung.LayThuMucData(), "log.txt");
+            if (!System.IO.File.Exists(duongDanLog))
+            {
+                MessageBox.Show("Hiện tại hệ thống hoạt động ổn định, chưa có lỗi nào được ghi nhận!", "Nhật ký hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                System.Diagnostics.Process.Start("notepad.exe", duongDanLog);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể mở file nhật ký: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Sắp xếp cửa sổ con theo tầng (Cascade)

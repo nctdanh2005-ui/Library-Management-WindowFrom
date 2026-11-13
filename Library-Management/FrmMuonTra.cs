@@ -49,6 +49,13 @@ namespace Library_Management
             HienThiDanhSachPhieuMuon();
             CapNhatThongKe();
 
+            // Phân quyền: Nhân viên không được phép xóa lịch sử phiếu mượn (chỉ Quản trị viên mới được xóa)
+            if (DuLieuChung.NguoiDungHienTai != null && DuLieuChung.NguoiDungHienTai.VaiTro == "NhanVien")
+            {
+                btnXoaPhieu.Enabled = false;
+                btnXoaPhieu.Text = "🗑️ Xóa (Chỉ Admin)";
+            }
+
             dangKhoiTao = false;
         }
 

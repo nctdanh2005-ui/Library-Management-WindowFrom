@@ -38,6 +38,13 @@ namespace Library_Management
             // Đổ dữ liệu từ docgia.txt (qua DuLieuChung.DanhSachDocGia) lên ListView
             HienThiDanhSachDocGia();
 
+            // Phân quyền: Nhân viên không được phép xóa hồ sơ độc giả
+            if (DuLieuChung.NguoiDungHienTai != null && DuLieuChung.NguoiDungHienTai.VaiTro == "NhanVien")
+            {
+                btnXoa.Enabled = false;
+                btnXoa.Text = "🗑️ Xóa (Chỉ Admin)";
+            }
+
             dangKhoiTao = false;
         }
 

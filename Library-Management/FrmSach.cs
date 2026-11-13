@@ -37,6 +37,16 @@ namespace Library_Management
             txtMaTheLoai.Clear();
             txtTenTheLoai.Clear();
 
+            // Phân quyền: Nhân viên không được phép xóa sách và xóa danh mục thể loại
+            if (DuLieuChung.NguoiDungHienTai != null && DuLieuChung.NguoiDungHienTai.VaiTro == "NhanVien")
+            {
+                btnXoaSach.Enabled = false;
+                btnXoaSach.Text = "🗑️ Xóa (Chỉ Admin)";
+                btnXoaTheLoai.Enabled = false;
+                btnXoaTheLoai.Text = "Xóa TL (Admin)";
+                tsmXoa.Enabled = false;
+            }
+
             // Hoàn tất khởi tạo
             dangKhoiTao = false;
         }
