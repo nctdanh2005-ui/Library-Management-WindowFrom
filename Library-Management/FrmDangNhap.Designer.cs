@@ -15,6 +15,7 @@ namespace Library_Management
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblTieuDe = new System.Windows.Forms.Label();
             this.lblTaiKhoan = new System.Windows.Forms.Label();
             this.txtTaiKhoan = new System.Windows.Forms.TextBox();
@@ -23,6 +24,8 @@ namespace Library_Management
             this.chkGhiNho = new System.Windows.Forms.CheckBox();
             this.btnDangNhap = new System.Windows.Forms.Button();
             this.btnThoat = new System.Windows.Forms.Button();
+            this.lblThongBaoKhoa = new System.Windows.Forms.Label();
+            this.timerKhoa = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // lblTieuDe
@@ -117,13 +120,30 @@ namespace Library_Management
             this.btnThoat.UseVisualStyleBackColor = false;
             this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
+            // lblThongBaoKhoa
+            // 
+            this.lblThongBaoKhoa.Font = new System.Drawing.Font("Segoe UI", 9.25F, System.Drawing.FontStyle.Italic);
+            this.lblThongBaoKhoa.ForeColor = System.Drawing.Color.Red;
+            this.lblThongBaoKhoa.Location = new System.Drawing.Point(12, 296);
+            this.lblThongBaoKhoa.Name = "lblThongBaoKhoa";
+            this.lblThongBaoKhoa.Size = new System.Drawing.Size(410, 25);
+            this.lblThongBaoKhoa.TabIndex = 8;
+            this.lblThongBaoKhoa.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblThongBaoKhoa.Visible = false;
+            // 
+            // timerKhoa
+            // 
+            this.timerKhoa.Interval = 1000;
+            this.timerKhoa.Tick += new System.EventHandler(this.timerKhoa_Tick);
+            // 
             // FrmDangNhap
             // 
             this.AcceptButton = this.btnDangNhap;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(434, 321);
+            this.ClientSize = new System.Drawing.Size(434, 330);
+            this.Controls.Add(this.lblThongBaoKhoa);
             this.Controls.Add(this.btnThoat);
             this.Controls.Add(this.btnDangNhap);
             this.Controls.Add(this.chkGhiNho);
@@ -154,6 +174,8 @@ namespace Library_Management
         private System.Windows.Forms.CheckBox chkGhiNho;
         private System.Windows.Forms.Button btnDangNhap;
         private System.Windows.Forms.Button btnThoat;
+        private System.Windows.Forms.Label lblThongBaoKhoa;
+        private System.Windows.Forms.Timer timerKhoa;
     }
 }
 

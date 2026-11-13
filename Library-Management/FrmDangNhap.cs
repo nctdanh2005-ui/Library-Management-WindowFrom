@@ -9,6 +9,9 @@ namespace Library_Management
         // Biến đếm số lần đăng nhập sai liên tiếp
         private int soLanSai = 0;
 
+        // Biến đếm ngược thời gian khóa (giây)
+        private int thoiGianConLai = 0;
+
         public FrmDangNhap()
         {
             InitializeComponent();
@@ -121,8 +124,15 @@ namespace Library_Management
 
                 if (soLanSai >= 3)
                 {
+                    thoiGianConLai = 30;
                     btnDangNhap.Enabled = false;
-                    MessageBox.Show("Bạn đã nhập sai thông tin 3 lần liên tiếp!\nNút Đăng nhập đã bị khóa để đảm bảo an toàn.", "Cảnh báo bảo mật", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtTaiKhoan.Enabled = false;
+                    txtMatKhau.Enabled = false;
+                    lblThongBaoKhoa.Text = "Hệ thống bị khóa. Vui lòng thử lại sau: " + thoiGianConLai + " giây...";
+                    lblThongBaoKhoa.Visible = true;
+                    timerKhoa.Start();
+
+                    MessageBox.Show("Bạn đã nhập sai thông tin 3 lần liên tiếp!\nHệ thống tạm thời bị khóa trong 30 giây.", "Cảnh báo bảo mật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -130,6 +140,30 @@ namespace Library_Management
                     txtMatKhau.Clear();
                     txtMatKhau.Focus();
                 }
+            }
+        }
+
+        // Sự kiện đếm ngược thời gian mở khóa hệ thống sau 30 giây
+        private void timerKhoa_Tick(object sender, EventArgs e)
+        {
+            thoiGianConLai--;
+
+            if (thoiGianConLai > 0)
+            {
+                lblThongBaoKhoa.Text = "Hệ thống bị khóa. Vui lòng thử lại sau: " + thoiGianConLai + " giây...";
+            }
+            else
+            {
+                timerKhoa.Stop();
+                soLanSai = 0; // Đặt lại số lần sai về 0
+                btnDangNhap.Enabled = true;
+                txtTaiKhoan.Enabled = true;
+                txtMatKhau.Enabled = true;
+                lblThongBaoKhoa.Visible = false;
+                txtMatKhau.Clear();
+                txtMatKhau.Focus();
+
+                MessageBox.Show("Đã hết thời gian khóa! Bạn có thể tiếp tục đăng nhập.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
