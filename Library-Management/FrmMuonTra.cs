@@ -44,6 +44,7 @@ namespace Library_Management
 
             // 3. Đưa ngày mượn / hạn trả mặc định vào ô nhập
             DatNgayMacDinh();
+            DatTrangThaiThongTinPhieu(true);
 
             // 4. Hiển thị danh sách phiếu mượn
             HienThiDanhSachPhieuMuon();
@@ -141,6 +142,25 @@ namespace Library_Management
             txtSoPhieu.Text = TaoSoPhieuMoi();
         }
 
+        // Khóa phần thông tin khi đang xem một phiếu đã chọn trong danh sách.
+        // Ô Ngày trả luôn mở để nhân viên nhập ngày trả thực tế khi trả sách.
+        private void DatTrangThaiThongTinPhieu(bool choPhepChinhSua)
+        {
+            txtSoPhieu.Enabled = choPhepChinhSua;
+            cboDocGia.Enabled = choPhepChinhSua;
+            cboSach.Enabled = choPhepChinhSua;
+            txtNgayMuon.Enabled = choPhepChinhSua;
+            txtHanTra.Enabled = choPhepChinhSua;
+        }
+
+        // Đưa phần nhập liệu về chế độ lập phiếu mới
+        private void ChuyenSangLapPhieuMoi()
+        {
+            soPhieuDangChon = "";
+            DatNgayMacDinh();
+            DatTrangThaiThongTinPhieu(true);
+        }
+
         // Sinh số phiếu mới dạng PMxxx dựa trên số lớn nhất đang có
         private string TaoSoPhieuMoi()
         {
@@ -170,6 +190,9 @@ namespace Library_Management
         // Đổ dữ liệu phiếu mượn lên ListView: tìm kiếm + lọc trạng thái + tô màu cảnh báo
         private void HienThiDanhSachPhieuMuon()
         {
+            // Tự động tính tiền phạt cho phiếu quá hạn chưa trả (theo ngày hiện tại)
+            DuLieuChung.CapNhatTienPhatQuaHan();
+
             lvPhieuMuon.Items.Clear();
 
             string tuKhoa = txtTimKiem.Text.Trim().ToLower();
@@ -278,18 +301,19 @@ namespace Library_Management
             int quaHan = 0;
             int daTra = 0;
             int tongPhat = 0;
+            int phatChuaThu = 0;
 
             foreach (PhieuMuon pm in DuLieuChung.DanhSachPhieuMuon)
             {
-                tongPhat = tongPhat + pm.TienPhat;
-
                 if (pm.NgayTra.Trim() != "")
                 {
                     daTra++;
+                    tongPhat = tongPhat + pm.TienPhat; // phiếu đã trả: tiền phạt đã chốt và thu
                 }
                 else if (pm.HanTra.Date < homNay)
                 {
                     quaHan++;
+                    phatChuaThu = phatChuaThu + pm.TienPhat; // phạt tự tính đến hôm nay, chưa thu
                 }
                 else
                 {
@@ -297,9 +321,10 @@ namespace Library_Management
                 }
             }
 
-            lblThongKe.Text = "Tổng số phiếu: " + tongSo.ToString() + "\r\n" +
+            lblThongKe.Text = "Tổng số phiếu: " + tongSo.ToString() + "   |   Đã trả: " + daTra.ToString() + "\r\n" +
                               "Đang mượn: " + dangMuon.ToString() + "   |   Quá hạn: " + quaHan.ToString() + "\r\n" +
-                              "Đã trả: " + daTra.ToString() + "   |   Tiền phạt đã thu: " + DinhDangTien(tongPhat);
+                              "Phạt đã thu: " + DinhDangTien(tongPhat) + "\r\n" +
+                              "Phạt quá hạn chưa thu: " + DinhDangTien(phatChuaThu);
         }
 
         // Định dạng tiền tệ kiểu Việt Nam (1.250.000)
@@ -350,13 +375,7 @@ namespace Library_Management
         // Đọc tiền phạt mỗi ngày quá hạn từ App.config (mặc định 5000 đồng)
         private int LayTienPhatMoiNgay()
         {
-            string giaTri = ConfigurationManager.AppSettings["TienPhatMoiNgay"];
-            int tienPhat;
-            if (!int.TryParse(giaTri, out tienPhat) || tienPhat < 0)
-            {
-                tienPhat = 5000;
-            }
-            return tienPhat;
+            return DuLieuChung.LayTienPhatMoiNgay();
         }
 
         // ================= TÌM KIẾM VÀ LỌC =================
@@ -414,6 +433,11 @@ namespace Library_Management
         {
             if (lvPhieuMuon.SelectedItems.Count == 0)
             {
+                // Bỏ chọn (hoặc danh sách vừa nạp lại) -> quay về chế độ lập phiếu mới
+                if (soPhieuDangChon != "")
+                {
+                    ChuyenSangLapPhieuMoi();
+                }
                 return;
             }
 
@@ -428,6 +452,7 @@ namespace Library_Management
             // Chọn đúng độc giả và sách của phiếu trong ComboBox
             ChonDocGiaTrongCombo(pm.MaDocGia);
             ChonSachTrongCombo(pm.MaSach);
+            DatTrangThaiThongTinPhieu(false);
         }
 
         private void ChonDocGiaTrongCombo(string maDocGia)
@@ -483,6 +508,17 @@ namespace Library_Management
 
         private void btnLapPhieu_Click(object sender, EventArgs e)
         {
+            // 0. Đang xem 1 phiếu cũ thì không lập phiếu từ dữ liệu của phiếu đó
+            if (soPhieuDangChon != "")
+            {
+                MessageBox.Show("Bạn đang xem phiếu " + soPhieuDangChon + ".\nPhần thông tin đã được đưa về chế độ lập phiếu mới, vui lòng chọn độc giả và sách rồi bấm Lập phiếu lại.",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                lvPhieuMuon.SelectedItems.Clear();
+                ChuyenSangLapPhieuMoi();
+                cboDocGia.Focus();
+                return;
+            }
+
             // 1. Kiểm tra đã chọn độc giả và sách chưa
             if (cboDocGia.SelectedItem == null)
             {
@@ -514,11 +550,67 @@ namespace Library_Management
                 return;
             }
 
-            // 3. Kiểm tra tồn kho sách
+            // 2b. Không cho mượn khi độc giả đang giữ sách quá hạn chưa trả
+            List<PhieuMuon> dsQuaHan = DuLieuChung.LayPhieuQuaHanCuaDocGia(dg.Ma);
+            if (dsQuaHan.Count > 0)
+            {
+                StringBuilder sbQuaHan = new StringBuilder();
+                foreach (PhieuMuon pmQH in dsQuaHan)
+                {
+                    Sach sachQH = TimSach(pmQH.MaSach);
+                    int soNgayTre = (DateTime.Now.Date - pmQH.HanTra.Date).Days;
+                    sbQuaHan.AppendLine("  • " + pmQH.SoPhieu + " - " + ((sachQH != null) ? sachQH.Ten : pmQH.MaSach) +
+                                        " (hạn " + pmQH.HanTra.ToString("dd/MM/yyyy") + ", trễ " + soNgayTre + " ngày, phạt " +
+                                        DinhDangTien(DuLieuChung.TinhTienPhat(pmQH, DateTime.Now.Date)) + ")");
+                }
+                MessageBox.Show("Độc giả '" + dg.HoTen + "' đang giữ " + dsQuaHan.Count + " cuốn sách QUÁ HẠN chưa trả:\n\n" +
+                    sbQuaHan.ToString() + "\nVui lòng trả sách quá hạn trước khi mượn tiếp.",
+                    "Đang giữ sách quá hạn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 2c. Mỗi độc giả chỉ được giữ tối đa 5 cuốn chưa trả
+            int soDangMuon = DuLieuChung.DemSachDangMuon(dg.Ma);
+            if (soDangMuon >= DuLieuChung.SoSachMuonToiDa)
+            {
+                MessageBox.Show("Độc giả '" + dg.HoTen + "' đang mượn " + soDangMuon + " cuốn chưa trả.\n" +
+                    "Mỗi độc giả chỉ được mượn tối đa " + DuLieuChung.SoSachMuonToiDa + " cuốn cùng lúc!",
+                    "Vượt số lượng cho phép", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 3. Kiểm tra tồn kho sách: hết sách thì gợi ý đặt trước
             if (sach.SoLuong <= 0)
             {
-                MessageBox.Show("Sách '" + sach.Ten + "' đã HẾT trong kho (tồn kho = 0)!\nKhông thể lập phiếu mượn.",
-                    "Hết sách", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                DialogResult drDat = MessageBox.Show("Sách '" + sach.Ten + "' hiện đã được mượn hết (tồn kho = 0)!\n\n" +
+                    "Bạn có muốn ĐẶT TRƯỚC cuốn sách này cho độc giả '" + dg.HoTen + "' không?\n" +
+                    "Khi có người trả, độc giả sẽ được ưu tiên mượn theo thứ tự đặt.",
+                    "Hết sách", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (drDat == DialogResult.Yes)
+                {
+                    DatTruocSach(dg, sach);
+                }
+                return;
+            }
+
+            // 3b. Sách đang có người đặt trước: chỉ những người đứng đầu hàng chờ (trong phạm vi tồn kho) được mượn
+            List<DatTruoc> hangCho = DuLieuChung.LayHangChoDatTruoc(sach.Ma);
+            int viTriTrongHang = -1;
+            for (int i = 0; i < hangCho.Count; i++)
+            {
+                if (hangCho[i].MaDocGia.ToLower() == dg.Ma.ToLower())
+                {
+                    viTriTrongHang = i;
+                    break;
+                }
+            }
+            int soNguoiUuTien = (viTriTrongHang >= 0) ? viTriTrongHang : hangCho.Count;
+            if (soNguoiUuTien >= sach.SoLuong)
+            {
+                MessageBox.Show("Sách '" + sach.Ten + "' còn " + sach.SoLuong + " cuốn nhưng đang được giữ cho " + hangCho.Count +
+                    " độc giả đặt trước (người đầu tiên: " + hangCho[0].MaDocGia + ").\n" +
+                    "Độc giả '" + dg.HoTen + "' chưa đến lượt mượn cuốn này.",
+                    "Sách đang được giữ chỗ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -574,9 +666,15 @@ namespace Library_Management
             DuLieuChung.GhiPhieuMuon();
             DuLieuChung.GhiSach();
 
+            // 7b. Nếu độc giả có đặt trước cuốn này thì đánh dấu đã nhận sách
+            if (viTriTrongHang >= 0)
+            {
+                hangCho[viTriTrongHang].TrangThai = "DaNhan";
+                DuLieuChung.GhiDatTruoc();
+            }
+
             // 8. Làm mới giao diện
-            soPhieuDangChon = "";
-            DatNgayMacDinh();
+            ChuyenSangLapPhieuMoi();
             NapComboBoxSach();
             HienThiDanhSachPhieuMuon();
             CapNhatThongKe();
@@ -641,12 +739,8 @@ namespace Library_Management
 
             // Tính tiền phạt theo số ngày quá hạn và cấu hình TienPhatMoiNgay
             int tienPhatMoiNgay = LayTienPhatMoiNgay();
-            int soNgayQuaHan = (ngayTra.Date - pm.HanTra.Date).Days;
-            if (soNgayQuaHan < 0)
-            {
-                soNgayQuaHan = 0;
-            }
-            int tienPhat = soNgayQuaHan * tienPhatMoiNgay;
+            int soNgayQuaHan = Math.Max(0, (ngayTra.Date - pm.HanTra.Date).Days);
+            int tienPhat = DuLieuChung.TinhTienPhat(pm, ngayTra);
 
             DocGia dg = TimDocGia(pm.MaDocGia);
             Sach sach = TimSach(pm.MaSach);
@@ -687,80 +781,126 @@ namespace Library_Management
             CapNhatThongKe();
             NapComboBoxSach();
             cboSach_SelectedIndexChanged(sender, e);
-            txtNgayTra.Text = pm.NgayTra;
+
+            // 5. Báo nếu cuốn vừa trả đang có độc giả đặt trước
+            string thongBaoDatTruoc = "";
+            List<DatTruoc> hangCho = DuLieuChung.LayHangChoDatTruoc(pm.MaSach);
+            if (hangCho.Count > 0)
+            {
+                DocGia dgCho = TimDocGia(hangCho[0].MaDocGia);
+                thongBaoDatTruoc = "\n\n📌 Sách này đang có " + hangCho.Count + " độc giả đặt trước.\n" +
+                                   "Hãy giữ sách và liên hệ người đầu hàng chờ: " +
+                                   ((dgCho != null) ? dgCho.HoTen + " (" + dgCho.Ma + ")" : hangCho[0].MaDocGia) +
+                                   ", đặt ngày " + hangCho[0].NgayDat.ToString("dd/MM/yyyy") + ".";
+            }
 
             MessageBox.Show(
                 "Trả sách thành công!\n" +
                 "- Số ngày quá hạn: " + soNgayQuaHan.ToString() + " ngày\n" +
-                "- Tiền phạt phải thu: " + DinhDangTien(tienPhat),
+                "- Tiền phạt phải thu: " + DinhDangTien(tienPhat) +
+                thongBaoDatTruoc,
                 "Trả sách thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // ================= TÍNH TIỀN PHẠT =================
+        // ================= ĐẶT TRƯỚC SÁCH (ĐIỂM CỘNG) =================
 
-        private void btnTinhPhat_Click(object sender, EventArgs e)
+        // Bấm nút Đặt trước: dùng độc giả + sách đang chọn trên phần nhập liệu
+        private void btnDatTruoc_Click(object sender, EventArgs e)
         {
-            if (soPhieuDangChon == "")
+            if (soPhieuDangChon != "")
             {
-                MessageBox.Show("Vui lòng chọn phiếu mượn cần tính tiền phạt!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lvPhieuMuon.SelectedItems.Clear();
+                ChuyenSangLapPhieuMoi();
+            }
+            if (cboDocGia.SelectedItem == null || cboSach.SelectedItem == null)
+            {
+                MessageBox.Show("Vui lòng chọn độc giả và sách cần đặt trước!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            PhieuMuon pm = TimPhieuMuon(soPhieuDangChon);
-            if (pm == null)
+            DocGia dg = (DocGia)cboDocGia.SelectedItem;
+            Sach sach = (Sach)cboSach.SelectedItem;
+
+            if (sach.SoLuong > 0)
             {
-                MessageBox.Show("Không tìm thấy phiếu mượn số: " + soPhieuDangChon, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Sách '" + sach.Ten + "' vẫn còn " + sach.SoLuong + " cuốn trong kho.\n" +
+                    "Chỉ đặt trước được sách đang được mượn hết. Hãy lập phiếu mượn trực tiếp.",
+                    "Không cần đặt trước", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            int tienPhatMoiNgay = LayTienPhatMoiNgay();
+            DatTruocSach(dg, sach);
+        }
 
-            // Phiếu đã trả thì tính theo ngày trả thực tế, chưa trả thì tính đến hôm nay
-            DateTime mocTinh = DateTime.Now.Date;
-            if (pm.NgayTra.Trim() != "")
+        // Tạo 1 yêu cầu đặt trước sau khi kiểm tra điều kiện thẻ và trùng lặp
+        private void DatTruocSach(DocGia dg, Sach sach)
+        {
+            if (dg.TrangThai == "BiKhoa" || dg.NgayHetHan.Date < DateTime.Now.Date)
             {
-                if (!DateTime.TryParseExact(pm.NgayTra.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out mocTinh))
+                MessageBox.Show("Thẻ của độc giả '" + dg.HoTen + "' đang bị khóa hoặc đã hết hạn, không thể đặt trước!",
+                    "Không hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            foreach (PhieuMuon pm in DuLieuChung.DanhSachPhieuMuon)
+            {
+                if (pm.MaDocGia.ToLower() == dg.Ma.ToLower() && pm.MaSach.ToLower() == sach.Ma.ToLower() && DuLieuChung.ChuaTra(pm))
                 {
-                    DateTime.TryParse(pm.NgayTra.Trim(), out mocTinh);
+                    MessageBox.Show("Độc giả '" + dg.HoTen + "' đang mượn chính cuốn sách này (phiếu " + pm.SoPhieu + ")!",
+                        "Không hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
             }
 
-            int soNgayQuaHan = (mocTinh.Date - pm.HanTra.Date).Days;
-            if (soNgayQuaHan < 0)
+            List<DatTruoc> hangCho = DuLieuChung.LayHangChoDatTruoc(sach.Ma);
+            foreach (DatTruoc dtCu in hangCho)
             {
-                soNgayQuaHan = 0;
-            }
-            int tienPhatMoi = soNgayQuaHan * tienPhatMoiNgay;
-
-            DocGia dg = TimDocGia(pm.MaDocGia);
-            Sach sach = TimSach(pm.MaSach);
-
-            string tieuDe = (pm.NgayTra.Trim() != "") ? "Tiền phạt theo ngày trả thực tế" : "Tiền phạt tạm tính đến hôm nay";
-            string thongTin = "TÍNH TIỀN PHẠT QUÁ HẠN\n\n" +
-                              "- Phiếu: " + pm.SoPhieu + "\n" +
-                              "- Độc giả: " + ((dg != null) ? dg.HoTen : pm.MaDocGia) + "\n" +
-                              "- Sách: " + ((sach != null) ? sach.Ten : pm.MaSach) + "\n" +
-                              "- Hạn trả: " + pm.HanTra.ToString("dd/MM/yyyy") + "\n" +
-                              "- Mốc tính phạt: " + mocTinh.ToString("dd/MM/yyyy") + " (" + tieuDe + ")\n\n" +
-                              "- Đơn giá phạt: " + DinhDangTien(tienPhatMoiNgay) + " / ngày\n" +
-                              "- Số ngày quá hạn: " + soNgayQuaHan.ToString() + " ngày\n" +
-                              "- Tiền phạt: " + DinhDangTien(tienPhatMoi) + "\n\n" +
-                              "Cập nhật số tiền phạt này vào phiếu?";
-
-            DialogResult dr = MessageBox.Show(thongTin, "Tính tiền phạt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr != DialogResult.Yes)
-            {
-                return;
+                if (dtCu.MaDocGia.ToLower() == dg.Ma.ToLower())
+                {
+                    MessageBox.Show("Độc giả '" + dg.HoTen + "' đã đặt trước cuốn sách này (mã " + dtCu.MaDat + ") rồi!",
+                        "Trùng đặt trước", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
             }
 
-            pm.TienPhat = tienPhatMoi;
-            DuLieuChung.GhiPhieuMuon();
+            DatTruoc dt = new DatTruoc(TaoMaDatTruocMoi(), dg.Ma, sach.Ma, DateTime.Now.Date, "ChoNhan");
+            DuLieuChung.DanhSachDatTruoc.Add(dt);
+            DuLieuChung.GhiDatTruoc();
 
+            MessageBox.Show("Đặt trước thành công!\n\n" +
+                "- Mã đặt trước: " + dt.MaDat + "\n" +
+                "- Độc giả: " + dg.HoTen + " (" + dg.Ma + ")\n" +
+                "- Sách: " + sach.Ten + "\n" +
+                "- Vị trí trong hàng chờ: " + (hangCho.Count + 1),
+                "Đặt trước sách", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // Sinh mã đặt trước mới dạng DTxxx
+        private string TaoMaDatTruocMoi()
+        {
+            int soLonNhat = 0;
+            foreach (DatTruoc dt in DuLieuChung.DanhSachDatTruoc)
+            {
+                string ma = dt.MaDat.Trim().ToUpper();
+                int giaTri;
+                if (ma.StartsWith("DT") && int.TryParse(ma.Substring(2), out giaTri) && giaTri > soLonNhat)
+                {
+                    soLonNhat = giaTri;
+                }
+            }
+            return "DT" + (soLonNhat + 1).ToString("000");
+        }
+
+        // Mở form thống kê / báo cáo mượn trả (độc giả quá hạn, theo thể loại, sách ít mượn, đặt trước)
+        private void btnBaoCao_Click(object sender, EventArgs e)
+        {
+            using (FrmBaoCaoMuonTra f = new FrmBaoCaoMuonTra())
+            {
+                f.ShowDialog(this);
+            }
+            // Form báo cáo có thể hủy đặt trước -> nạp lại hiển thị
             HienThiDanhSachPhieuMuon();
             CapNhatThongKe();
-
-            MessageBox.Show("Đã cập nhật tiền phạt của phiếu " + pm.SoPhieu + " thành " + DinhDangTien(tienPhatMoi) + ".",
-                "Cập nhật thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // ================= XÓA PHIẾU MƯỢN =================
@@ -808,6 +948,7 @@ namespace Library_Management
 
             soPhieuDangChon = "";
             DatNgayMacDinh();
+            DatTrangThaiThongTinPhieu(true);
             NapComboBoxSach();
             HienThiDanhSachPhieuMuon();
             CapNhatThongKe();
@@ -829,14 +970,17 @@ namespace Library_Management
             dangKhoiTao = false;
 
             // Đọc lại dữ liệu từ file để đồng bộ với các phân hệ khác
+            DuLieuChung.DocTheLoai();
             DuLieuChung.DocSach();
             DuLieuChung.DocDocGia();
             DuLieuChung.DocPhieuMuon();
+            DuLieuChung.DocDatTruoc();
 
             soPhieuDangChon = "";
             NapComboBoxDocGia();
             NapComboBoxSach();
             DatNgayMacDinh();
+            DatTrangThaiThongTinPhieu(true);
             HienThiDanhSachPhieuMuon();
             CapNhatThongKe();
             cboSach_SelectedIndexChanged(sender, e);
@@ -867,23 +1011,8 @@ namespace Library_Management
 
                 try
                 {
-                    using (StreamWriter sw = new StreamWriter(sfd.FileName, false, new UTF8Encoding(true)))
-                    {
-                        sw.WriteLine("SoPhieu,DocGia,Sach,NgayMuon,HanTra,NgayTra,TienPhat,TrangThai");
-
-                        foreach (ListViewItem item in lvPhieuMuon.Items)
-                        {
-                            string dong = TaoCSV(item.Text) + "," +
-                                          TaoCSV(item.SubItems[1].Text) + "," +
-                                          TaoCSV(item.SubItems[2].Text) + "," +
-                                          TaoCSV(item.SubItems[3].Text) + "," +
-                                          TaoCSV(item.SubItems[4].Text) + "," +
-                                          TaoCSV(item.SubItems[5].Text) + "," +
-                                          TaoCSV(item.SubItems[6].Text) + "," +
-                                          TaoCSV(item.SubItems[7].Text);
-                            sw.WriteLine(dong);
-                        }
-                    }
+                    // Dùng ký tự phân cách theo cài đặt vùng Windows để Excel tự tách cột
+                    DuLieuChung.XuatListViewRaCSV(lvPhieuMuon, sfd.FileName);
 
                     MessageBox.Show("Đã xuất " + lvPhieuMuon.Items.Count + " phiếu mượn ra file:\n" + sfd.FileName,
                         "Xuất CSV thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -894,16 +1023,6 @@ namespace Library_Management
                     DuLieuChung.GhiLog("Lỗi xuất CSV phiếu mượn: " + ex.Message);
                 }
             }
-        }
-
-        // Escape 1 trường dữ liệu theo chuẩn CSV
-        private string TaoCSV(string giaTri)
-        {
-            if (giaTri.Contains(",") || giaTri.Contains("\"") || giaTri.Contains(";"))
-            {
-                return "\"" + giaTri.Replace("\"", "\"\"") + "\"";
-            }
-            return giaTri;
         }
 
         // ================= IN PHIẾU MƯỢN (ĐIỂM CỘNG) =================
@@ -967,7 +1086,7 @@ namespace Library_Management
                         int soNgayTre = (homNay - pm.HanTra.Date).Days;
                         if (soNgayTre > 0)
                         {
-                            int tamTinh = soNgayTre * LayTienPhatMoiNgay();
+                            int tamTinh = DuLieuChung.TinhTienPhat(pm, homNay);
                             ThemDongPhieu(sb, "Phạt tạm tính", DinhDangTien(tamTinh) + " (" + soNgayTre.ToString() + " ngày)", rong);
                         }
                         else

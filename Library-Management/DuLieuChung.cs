@@ -18,6 +18,10 @@ namespace Library_Management
         public static List<Sach> DanhSachSach = new List<Sach>();
         public static List<DocGia> DanhSachDocGia = new List<DocGia>();
         public static List<PhieuMuon> DanhSachPhieuMuon = new List<PhieuMuon>();
+        public static List<DatTruoc> DanhSachDatTruoc = new List<DatTruoc>();
+
+        // Số sách tối đa một độc giả được giữ cùng lúc (chưa trả)
+        public const int SoSachMuonToiDa = 5;
 
         // Tài khoản hiện đang đăng nhập vào phần mềm
         public static User NguoiDungHienTai = null;
@@ -239,6 +243,15 @@ namespace Library_Management
                     sw.WriteLine("PM004;DG004;S03;01/10/2026;15/10/2026;20/10/2026;25000");
                 }
             }
+
+            // 6. File datruoc.txt (MaDat;MaDocGia;MaSach;NgayDat;TrangThai) - tạo rỗng nếu chưa có
+            string fileDatTruoc = Path.Combine(thuMucData, "datruoc.txt");
+            if (!File.Exists(fileDatTruoc))
+            {
+                using (StreamWriter sw = new StreamWriter(fileDatTruoc, false, Encoding.UTF8))
+                {
+                }
+            }
         }
 
         // ================= CÁC HÀM ĐỌC DỮ LIỆU TỪ FILE =================
@@ -250,6 +263,10 @@ namespace Library_Management
             DocSach();
             DocDocGia();
             DocPhieuMuon();
+            DocDatTruoc();
+
+            // Tự động tính tiền phạt cho các phiếu đang quá hạn tính đến hôm nay
+            CapNhatTienPhatQuaHan();
         }
 
         public static void DocUser()
@@ -468,6 +485,47 @@ namespace Library_Management
             }
         }
 
+        public static void DocDatTruoc()
+        {
+            DanhSachDatTruoc.Clear();
+            string duongDan = Path.Combine(LayThuMucData(), "datruoc.txt");
+            if (!File.Exists(duongDan)) return;
+
+            using (StreamReader sr = new StreamReader(duongDan, Encoding.UTF8))
+            {
+                while (!sr.EndOfStream)
+                {
+                    string line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    try
+                    {
+                        string[] parts = line.Split(';');
+                        if (parts.Length < 5)
+                        {
+                            GhiLog("Lỗi dòng Đặt trước không đủ 5 cột: " + line);
+                            continue;
+                        }
+
+                        DateTime ngayDat;
+                        if (!DateTime.TryParseExact(parts[3].Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out ngayDat))
+                        {
+                            GhiLog("Lỗi Ngày đặt không hợp lệ dòng Đặt trước: " + line);
+                            continue;
+                        }
+
+                        DatTruoc dt = new DatTruoc(parts[0].Trim(), parts[1].Trim(), parts[2].Trim(), ngayDat, parts[4].Trim());
+                        DanhSachDatTruoc.Add(dt);
+                    }
+                    catch (Exception ex)
+                    {
+                        GhiLog("Lỗi nạp Đặt trước dòng: " + line + " - Chi tiết: " + ex.Message);
+                        continue;
+                    }
+                }
+            }
+        }
+
         // ================= CÁC HÀM GHI DỮ LIỆU RA FILE =================
 
         public static void GhiUser()
@@ -563,6 +621,220 @@ namespace Library_Management
             {
                 GhiLog("Lỗi ghi file phieumuon.txt: " + ex.Message);
             }
+        }
+
+        public static void GhiDatTruoc()
+        {
+            try
+            {
+                string duongDan = Path.Combine(LayThuMucData(), "datruoc.txt");
+                using (StreamWriter sw = new StreamWriter(duongDan, false, Encoding.UTF8))
+                {
+                    foreach (DatTruoc dt in DanhSachDatTruoc)
+                    {
+                        sw.WriteLine(dt.MaDat + ";" + dt.MaDocGia + ";" + dt.MaSach + ";" + dt.NgayDat.ToString("dd/MM/yyyy") + ";" + dt.TrangThai);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                GhiLog("Lỗi ghi file datruoc.txt: " + ex.Message);
+            }
+        }
+
+        // ================= XUẤT CSV DÙNG CHUNG =================
+
+        // Ký tự phân cách cột mà Excel dùng để tách cột khi mở file .csv trên máy này.
+        // Excel lấy "List separator" của Windows; nhưng nếu ký tự đó trùng với dấu thập phân
+        // (máy vùng Việt Nam thường đặt cả hai là ',') thì Excel chuyển sang dùng ';'.
+        public static string LayKyTuPhanCachCSV()
+        {
+            TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+            string kyTu = ti.ListSeparator;
+            string dauThapPhan = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            if (string.IsNullOrEmpty(kyTu) || kyTu == dauThapPhan)
+            {
+                kyTu = ";";
+            }
+            return kyTu;
+        }
+
+        // Ghép các ô thành 1 dòng CSV, tự bọc ngoặc kép ô có chứa ký tự đặc biệt
+        public static string TaoDongCSV(params string[] cacO)
+        {
+            string phanCach = LayKyTuPhanCachCSV();
+            string[] ketQua = new string[cacO.Length];
+            for (int i = 0; i < cacO.Length; i++)
+            {
+                string giaTri = cacO[i] ?? "";
+                if (giaTri.Contains(phanCach) || giaTri.Contains(",") || giaTri.Contains(";") ||
+                    giaTri.Contains("\"") || giaTri.Contains("\n") || giaTri.Contains("\r"))
+                {
+                    giaTri = "\"" + giaTri.Replace("\"", "\"\"") + "\"";
+                }
+                ketQua[i] = giaTri;
+            }
+            return string.Join(phanCach, ketQua);
+        }
+
+        // Ghi các dòng của 1 ListView (kể cả tiêu đề cột) ra file CSV UTF-8 có BOM để Excel đọc đúng tiếng Việt
+        public static void XuatListViewRaCSV(ListView lv, string duongDan)
+        {
+            using (StreamWriter sw = new StreamWriter(duongDan, false, new UTF8Encoding(true)))
+            {
+                string[] tieuDe = new string[lv.Columns.Count];
+                for (int i = 0; i < lv.Columns.Count; i++)
+                {
+                    tieuDe[i] = lv.Columns[i].Text;
+                }
+                sw.WriteLine(TaoDongCSV(tieuDe));
+
+                foreach (ListViewItem item in lv.Items)
+                {
+                    string[] o = new string[lv.Columns.Count];
+                    for (int i = 0; i < o.Length; i++)
+                    {
+                        o[i] = (i < item.SubItems.Count) ? item.SubItems[i].Text : "";
+                    }
+                    sw.WriteLine(TaoDongCSV(o));
+                }
+            }
+        }
+
+        // ================= CÁC HÀM NGHIỆP VỤ MƯỢN - TRẢ DÙNG CHUNG =================
+
+        // Đọc tiền phạt mỗi ngày quá hạn từ App.config (mặc định 5000 đồng)
+        public static int LayTienPhatMoiNgay()
+        {
+            string giaTri = ConfigurationManager.AppSettings["TienPhatMoiNgay"];
+            int tienPhat;
+            if (!int.TryParse(giaTri, out tienPhat) || tienPhat < 0)
+            {
+                tienPhat = 5000;
+            }
+            return tienPhat;
+        }
+
+        // Phiếu chưa trả (cột NgayTra rỗng)
+        public static bool ChuaTra(PhieuMuon pm)
+        {
+            return pm.NgayTra.Trim() == "";
+        }
+
+        // Phiếu chưa trả và đã quá hạn trả so với hôm nay
+        public static bool DangQuaHan(PhieuMuon pm)
+        {
+            return ChuaTra(pm) && pm.HanTra.Date < DateTime.Now.Date;
+        }
+
+        // Tính tiền phạt của 1 phiếu tại mốc ngày cho trước: số ngày trễ x đơn giá trong App.config
+        public static int TinhTienPhat(PhieuMuon pm, DateTime mocTinh)
+        {
+            int soNgayQuaHan = (mocTinh.Date - pm.HanTra.Date).Days;
+            if (soNgayQuaHan <= 0)
+            {
+                return 0;
+            }
+            return soNgayQuaHan * LayTienPhatMoiNgay();
+        }
+
+        // Tự động cập nhật tiền phạt của các phiếu chưa trả tính đến hôm nay.
+        // Phiếu đã trả giữ nguyên số tiền đã chốt lúc trả. Trả về true nếu có phiếu thay đổi (đã ghi file).
+        public static bool CapNhatTienPhatQuaHan()
+        {
+            bool coThayDoi = false;
+            DateTime homNay = DateTime.Now.Date;
+            foreach (PhieuMuon pm in DanhSachPhieuMuon)
+            {
+                if (!ChuaTra(pm))
+                {
+                    continue;
+                }
+                int tienPhat = TinhTienPhat(pm, homNay);
+                if (pm.TienPhat != tienPhat)
+                {
+                    pm.TienPhat = tienPhat;
+                    coThayDoi = true;
+                }
+            }
+            if (coThayDoi)
+            {
+                GhiPhieuMuon();
+            }
+            return coThayDoi;
+        }
+
+        // Đếm số sách độc giả đang giữ (chưa trả)
+        public static int DemSachDangMuon(string maDocGia)
+        {
+            int dem = 0;
+            foreach (PhieuMuon pm in DanhSachPhieuMuon)
+            {
+                if (pm.MaDocGia.ToLower() == maDocGia.ToLower() && ChuaTra(pm))
+                {
+                    dem++;
+                }
+            }
+            return dem;
+        }
+
+        // Danh sách phiếu chưa trả đã quá hạn của 1 độc giả
+        public static List<PhieuMuon> LayPhieuQuaHanCuaDocGia(string maDocGia)
+        {
+            List<PhieuMuon> ketQua = new List<PhieuMuon>();
+            foreach (PhieuMuon pm in DanhSachPhieuMuon)
+            {
+                if (pm.MaDocGia.ToLower() == maDocGia.ToLower() && DangQuaHan(pm))
+                {
+                    ketQua.Add(pm);
+                }
+            }
+            return ketQua;
+        }
+
+        // Tìm thể loại theo mã
+        public static TheLoai TimTheLoai(string ma)
+        {
+            foreach (TheLoai tl in DanhSachTheLoai)
+            {
+                if (tl.Ma.ToLower() == ma.ToLower())
+                {
+                    return tl;
+                }
+            }
+            return null;
+        }
+
+        // Lấy thể loại gốc (cấp cao nhất) của 1 thể loại; có chặn vòng lặp nếu dữ liệu lỗi
+        public static TheLoai LayTheLoaiGoc(string maTheLoai)
+        {
+            TheLoai tl = TimTheLoai(maTheLoai);
+            int buoc = 0;
+            while (tl != null && tl.MaCha.Trim() != "" && buoc < 50)
+            {
+                TheLoai cha = TimTheLoai(tl.MaCha);
+                if (cha == null)
+                {
+                    break;
+                }
+                tl = cha;
+                buoc++;
+            }
+            return tl;
+        }
+
+        // Danh sách đặt trước đang chờ nhận của 1 cuốn sách (theo thứ tự đặt)
+        public static List<DatTruoc> LayHangChoDatTruoc(string maSach)
+        {
+            List<DatTruoc> ketQua = new List<DatTruoc>();
+            foreach (DatTruoc dt in DanhSachDatTruoc)
+            {
+                if (dt.MaSach.ToLower() == maSach.ToLower() && dt.TrangThai == "ChoNhan")
+                {
+                    ketQua.Add(dt);
+                }
+            }
+            return ketQua;
         }
     }
 }

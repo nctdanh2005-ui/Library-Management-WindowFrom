@@ -582,21 +582,8 @@ namespace Library_Management
 
                 try
                 {
-                    // UTF-8 có BOM để Excel mở không lỗi tiếng Việt
-                    using (StreamWriter sw = new StreamWriter(sfd.FileName, false, new UTF8Encoding(true)))
-                    {
-                        sw.WriteLine("Ma,HoTen,Lop,NgayHetHan,TrangThai");
-
-                        foreach (ListViewItem item in lvDocGia.Items)
-                        {
-                            string dong = TaoCSV(item.Text) + "," +
-                                          TaoCSV(item.SubItems[1].Text) + "," +
-                                          TaoCSV(item.SubItems[2].Text) + "," +
-                                          TaoCSV(item.SubItems[3].Text) + "," +
-                                          TaoCSV(item.SubItems[4].Text);
-                            sw.WriteLine(dong);
-                        }
-                    }
+                    // UTF-8 có BOM + ký tự phân cách theo vùng Windows để Excel tách cột và không lỗi tiếng Việt
+                    DuLieuChung.XuatListViewRaCSV(lvDocGia, sfd.FileName);
 
                     MessageBox.Show("Đã xuất " + lvDocGia.Items.Count + " độc giả ra file:\n" + sfd.FileName,
                         "Xuất CSV thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -607,16 +594,6 @@ namespace Library_Management
                     DuLieuChung.GhiLog("Lỗi xuất CSV độc giả: " + ex.Message);
                 }
             }
-        }
-
-        // Escape 1 trường dữ liệu theo chuẩn CSV
-        private string TaoCSV(string giaTri)
-        {
-            if (giaTri.Contains(",") || giaTri.Contains("\"") || giaTri.Contains(";"))
-            {
-                return "\"" + giaTri.Replace("\"", "\"\"") + "\"";
-            }
-            return giaTri;
         }
 
         // ================= IN THẺ ĐỘC GIẢ (ĐIỂM CỘNG) =================

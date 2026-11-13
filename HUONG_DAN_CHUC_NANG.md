@@ -327,7 +327,11 @@ kiện tìm kiếm và lọc hiện tại.
 File CSV:
 
 - Có BOM UTF-8 để tương thích với Excel.
-- Có các cột `Ma`, `HoTen`, `Lop`, `NgayHetHan`, `TrangThai`.
+- Các cột lấy theo tiêu đề cột trên danh sách độc giả.
+- Ký tự phân cách cột lấy theo "List separator" của Windows. Nếu ký tự này trùng
+  với dấu thập phân (máy vùng Việt Nam thường đặt cả hai là dấu phẩy), file dùng
+  dấu chấm phẩy `;`. Nhờ vậy Excel mở bằng double-click sẽ tự tách đúng cột.
+  Hàm dùng chung: `DuLieuChung.XuatListViewRaCSV`.
 - Tự động escape giá trị chứa dấu phẩy, dấu chấm phẩy hoặc dấu ngoặc kép.
 
 ### 6.10. In thẻ độc giả
@@ -402,13 +406,19 @@ Người dùng chọn độc giả, chọn sách, nhập ngày mượn và hạn
 
 Điều kiện:
 
-1. Phải chọn độc giả và sách.
+1. Phải chọn độc giả và sách. Nếu đang xem một phiếu cũ, form tự chuyển về chế
+   độ lập phiếu mới, không dùng dữ liệu của phiếu cũ.
 2. Thẻ độc giả không bị khóa.
 3. Thẻ độc giả chưa hết hạn.
-4. Sách còn tồn kho.
-5. Độc giả không được mượn cùng cuốn sách khi phiếu trước đó chưa trả.
-6. Ngày mượn và hạn trả đúng định dạng `dd/MM/yyyy`.
-7. Hạn trả không được trước ngày mượn.
+4. Độc giả không đang giữ sách quá hạn chưa trả (thông báo liệt kê các phiếu
+   quá hạn).
+5. Độc giả đang giữ ít hơn 5 cuốn chưa trả (`DuLieuChung.SoSachMuonToiDa`).
+6. Sách còn tồn kho. Nếu hết, ứng dụng hỏi có muốn đặt trước sách không.
+7. Nếu sách đang có người đặt trước, chỉ những độc giả đến lượt trong hàng chờ
+   (trong phạm vi số cuốn còn lại) mới được mượn.
+8. Độc giả không được mượn cùng cuốn sách khi phiếu trước đó chưa trả.
+9. Ngày mượn và hạn trả đúng định dạng `dd/MM/yyyy`.
+10. Hạn trả không được trước ngày mượn.
 
 Khi lập thành công:
 
@@ -445,15 +455,21 @@ Khi xác nhận trả:
 - Lưu tiền phạt.
 - Tăng tồn kho sách lên 1.
 - Ghi lại `phieumuon.txt` và `sach.txt`.
+- Nếu sách vừa trả có người đặt trước, thông báo tên người đầu hàng chờ.
 
-### 7.7. Tính tiền phạt
+Ô Ngày trả luôn cho phép nhập kể cả khi đang xem phiếu, để ghi ngày trả thực tế.
 
-Chức năng này dùng để tính lại tiền phạt của phiếu đang chọn:
+### 7.7. Tự động tính tiền phạt
 
-- Phiếu đã trả: tính đến ngày trả thực tế.
-- Phiếu chưa trả: tạm tính đến ngày hiện tại.
+Không có nút tính phạt thủ công. Tiền phạt được tính tự động bằng hàm
+`DuLieuChung.TinhTienPhat`:
 
-Người dùng xác nhận trước khi số tiền được cập nhật vào phiếu.
+- Phiếu chưa trả đã quá hạn: tiền phạt tự cập nhật đến ngày hiện tại mỗi khi
+  nạp dữ liệu lúc đăng nhập và mỗi khi hiển thị danh sách phiếu
+  (`DuLieuChung.CapNhatTienPhatQuaHan`). Cột Tiền phạt tăng dần theo từng ngày
+  trễ, và thay đổi được ghi vào `phieumuon.txt`.
+- Phiếu đã trả: tiền phạt được chốt theo ngày trả thực tế lúc bấm Trả sách và
+  không thay đổi nữa.
 
 Đơn giá phạt lấy từ `App.config`, mặc định là 5.000 đồng/ngày nếu cấu hình
 không hợp lệ.
@@ -475,7 +491,8 @@ Vùng thống kê hiển thị:
 - Số phiếu đang mượn.
 - Số phiếu quá hạn.
 - Số phiếu đã trả.
-- Tổng tiền phạt đang lưu trong dữ liệu.
+- Tổng tiền phạt đã thu (chỉ cộng các phiếu đã trả).
+- Tổng tiền phạt quá hạn chưa thu (các phiếu quá hạn đang được tự tính phạt).
 
 ### 7.10. Làm mới dữ liệu
 
@@ -493,12 +510,11 @@ Chức năng này dùng để đồng bộ dữ liệu khi một phân hệ khá
 
 File CSV xuất các phiếu đang hiển thị, bao gồm cả điều kiện tìm kiếm và lọc.
 
-Các cột:
+Các cột lấy theo tiêu đề cột trên danh sách: Số phiếu, Độc giả, Sách,
+Ngày mượn, Hạn trả, Ngày trả, Tiền phạt, Trạng thái.
 
-`SoPhieu`, `DocGia`, `Sach`, `NgayMuon`, `HanTra`, `NgayTra`, `TienPhat`,
-`TrangThai`.
-
-File được ghi bằng UTF-8 có BOM và có xử lý escape dữ liệu CSV.
+File được ghi bằng UTF-8 có BOM và có xử lý escape dữ liệu CSV. Ký tự phân cách
+cột được chọn theo cài đặt vùng của Windows (xem mục 6.9) để Excel tự tách cột.
 
 ### 7.12. In phiếu mượn
 
@@ -511,6 +527,36 @@ Phiếu đang chọn được xuất thành file TXT dạng khung, gồm:
 - Trạng thái.
 - Tiền phạt hoặc tiền phạt tạm tính.
 - Ngày in.
+
+### 7.13. Đặt trước sách (điểm cộng)
+
+Chỉ đặt trước được sách đang được mượn hết (tồn kho = 0). Có hai cách:
+
+- Bấm nút **Đặt trước sách** với độc giả và sách đang chọn.
+- Khi lập phiếu cho sách đã hết, chọn **Yes** ở hộp thoại gợi ý đặt trước.
+
+Điều kiện: thẻ không khóa và chưa hết hạn, độc giả không đang mượn chính cuốn đó,
+và chưa có yêu cầu đặt trước đang chờ cho cuốn đó.
+
+Dữ liệu lưu ở `Data/datruoc.txt` theo định dạng
+`MaDat;MaDocGia;MaSach;NgayDat;TrangThai`. Trạng thái gồm `ChoNhan`, `DaNhan`
+và `DaHuy`. Khi độc giả trong hàng chờ lập phiếu mượn cuốn đó, yêu cầu tự chuyển
+sang `DaNhan`.
+
+### 7.14. Thống kê - Báo cáo mượn trả
+
+Mở bằng nút **Thống kê / BC** trên form Mượn trả hoặc menu
+**Quản lý > Thống kê - Báo cáo mượn trả** (`Ctrl+B`). Form có 4 tab:
+
+1. **Độc giả quá hạn**: gộp theo độc giả, gồm số cuốn quá hạn, số ngày trễ lâu
+   nhất, tiền phạt tạm tính và danh sách sách đang giữ quá hạn.
+2. **Lượt mượn theo thể loại**: mỗi phiếu tính là 1 lượt, kèm số đang mượn và
+   tỷ lệ phần trăm. Có thể xem chi tiết từng thể loại hoặc gộp theo thể loại gốc.
+3. **Sách ít được mượn** (điểm cộng): liệt kê sách có số lượt mượn nhỏ hơn hoặc
+   bằng ngưỡng chọn (mặc định 1). Sách chưa từng được mượn được tô vàng.
+4. **Đặt trước sách**: xem hàng chờ và hủy yêu cầu đặt trước.
+
+Nút **Xuất CSV tab hiện tại** xuất bảng đang xem ra file CSV.
 
 ## 8. Dữ liệu và mô hình đối tượng
 

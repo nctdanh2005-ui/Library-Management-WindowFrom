@@ -166,5 +166,38 @@ namespace Library_Management
             return "Phiếu " + this.SoPhieu + " (ĐG: " + this.MaDocGia + ", Sách: " + this.MaSach + ")";
         }
     }
+
+    // 6. Đối tượng Đặt trước sách (độc giả xếp hàng chờ sách đang được mượn hết)
+    public class DatTruoc
+    {
+        public string MaDat { get; set; }
+        public string MaDocGia { get; set; }
+        public string MaSach { get; set; }
+        public DateTime NgayDat { get; set; }
+        public string TrangThai { get; set; } // "ChoNhan", "DaNhan" hoặc "DaHuy"
+
+        public DatTruoc()
+        {
+            this.MaDat = "";
+            this.MaDocGia = "";
+            this.MaSach = "";
+            this.NgayDat = DateTime.Now;
+            this.TrangThai = "ChoNhan";
+        }
+
+        public DatTruoc(string maDat, string maDocGia, string maSach, DateTime ngayDat, string trangThai)
+        {
+            this.MaDat = maDat;
+            this.MaDocGia = maDocGia;
+            this.MaSach = maSach;
+            this.NgayDat = ngayDat;
+            this.TrangThai = trangThai;
+        }
+
+        public override string ToString()
+        {
+            return "Đặt trước " + this.MaDat + " (ĐG: " + this.MaDocGia + ", Sách: " + this.MaSach + ")";
+        }
+    }
 }
 

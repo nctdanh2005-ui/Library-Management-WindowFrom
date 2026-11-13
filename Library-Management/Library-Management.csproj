@@ -79,6 +79,12 @@
     <Compile Include="FrmMuonTra.Designer.cs">
       <DependentUpon>FrmMuonTra.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmBaoCaoMuonTra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBaoCaoMuonTra.Designer.cs">
+      <DependentUpon>FrmBaoCaoMuonTra.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmQuanLyTaiKhoan.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,8 +99,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FrmBaoCaoMuonTra.resx">
+      <DependentUpon>FrmBaoCaoMuonTra.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmDocGia.resx">
       <DependentUpon>FrmDocGia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMain.resx">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMuonTra.resx">
+      <DependentUpon>FrmMuonTra.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

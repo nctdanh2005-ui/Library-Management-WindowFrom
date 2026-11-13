@@ -63,7 +63,7 @@ namespace Library_Management
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.MdiWindowListItem = this.mnuCuaSo;
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1008, 27);
+            this.menuStrip1.Size = new System.Drawing.Size(1008, 31);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -78,55 +78,55 @@ namespace Library_Management
             this.toolStripSeparator3,
             this.mnuThoat});
             this.mnuHeThong.Name = "mnuHeThong";
-            this.mnuHeThong.Size = new System.Drawing.Size(79, 23);
+            this.mnuHeThong.Size = new System.Drawing.Size(96, 27);
             this.mnuHeThong.Text = "&Hệ thống";
             // 
             // mnuDangXuat
             // 
             this.mnuDangXuat.Name = "mnuDangXuat";
             this.mnuDangXuat.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-            this.mnuDangXuat.Size = new System.Drawing.Size(193, 24);
+            this.mnuDangXuat.Size = new System.Drawing.Size(295, 28);
             this.mnuDangXuat.Text = "Đăng &xuất";
             this.mnuDangXuat.Click += new System.EventHandler(this.mnuDangXuat_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(190, 6);
-            // 
-            // mnuThoat
-            // 
-            this.mnuThoat.Name = "mnuThoat";
-            this.mnuThoat.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.mnuThoat.Size = new System.Drawing.Size(193, 24);
-            this.mnuThoat.Text = "&Thoát";
-            this.mnuThoat.Click += new System.EventHandler(this.mnuThoat_Click);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(292, 6);
             // 
             // mnuChonMauNen
             // 
             this.mnuChonMauNen.Name = "mnuChonMauNen";
-            this.mnuChonMauNen.Size = new System.Drawing.Size(193, 24);
+            this.mnuChonMauNen.Size = new System.Drawing.Size(295, 28);
             this.mnuChonMauNen.Text = "Chọn &màu nền...";
             this.mnuChonMauNen.Click += new System.EventHandler(this.mnuChonMauNen_Click);
             // 
             // mnuChonPhonChu
             // 
             this.mnuChonPhonChu.Name = "mnuChonPhonChu";
-            this.mnuChonPhonChu.Size = new System.Drawing.Size(193, 24);
+            this.mnuChonPhonChu.Size = new System.Drawing.Size(295, 28);
             this.mnuChonPhonChu.Text = "Chọn &phông chữ...";
             this.mnuChonPhonChu.Click += new System.EventHandler(this.mnuChonPhonChu_Click);
             // 
             // mnuDatLaiGiaoDien
             // 
             this.mnuDatLaiGiaoDien.Name = "mnuDatLaiGiaoDien";
-            this.mnuDatLaiGiaoDien.Size = new System.Drawing.Size(193, 24);
+            this.mnuDatLaiGiaoDien.Size = new System.Drawing.Size(295, 28);
             this.mnuDatLaiGiaoDien.Text = "Đặt lại giao diện &mặc định";
             this.mnuDatLaiGiaoDien.Click += new System.EventHandler(this.mnuDatLaiGiaoDien_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(190, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(292, 6);
+            // 
+            // mnuThoat
+            // 
+            this.mnuThoat.Name = "mnuThoat";
+            this.mnuThoat.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.mnuThoat.Size = new System.Drawing.Size(295, 28);
+            this.mnuThoat.Text = "&Thoát";
+            this.mnuThoat.Click += new System.EventHandler(this.mnuThoat_Click);
             // 
             // mnuQuanLy
             // 
@@ -135,14 +135,15 @@ namespace Library_Management
             this.mnuDocGia,
             this.mnuMuonTra});
             this.mnuQuanLy.Name = "mnuQuanLy";
-            this.mnuQuanLy.Size = new System.Drawing.Size(70, 23);
+            this.mnuQuanLy.Size = new System.Drawing.Size(83, 27);
             this.mnuQuanLy.Text = "&Quản lý";
+            this.mnuQuanLy.Click += new System.EventHandler(this.mnuQuanLy_Click);
             // 
             // mnuSach
             // 
             this.mnuSach.Name = "mnuSach";
             this.mnuSach.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuSach.Size = new System.Drawing.Size(256, 24);
+            this.mnuSach.Size = new System.Drawing.Size(326, 28);
             this.mnuSach.Text = "Quản lý &Sách (SV1)";
             this.mnuSach.Click += new System.EventHandler(this.mnuSach_Click);
             // 
@@ -150,7 +151,7 @@ namespace Library_Management
             // 
             this.mnuDocGia.Name = "mnuDocGia";
             this.mnuDocGia.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-            this.mnuDocGia.Size = new System.Drawing.Size(256, 24);
+            this.mnuDocGia.Size = new System.Drawing.Size(326, 28);
             this.mnuDocGia.Text = "Quản lý &Độc giả (SV2)";
             this.mnuDocGia.Click += new System.EventHandler(this.mnuDocGia_Click);
             // 
@@ -158,7 +159,7 @@ namespace Library_Management
             // 
             this.mnuMuonTra.Name = "mnuMuonTra";
             this.mnuMuonTra.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this.mnuMuonTra.Size = new System.Drawing.Size(256, 24);
+            this.mnuMuonTra.Size = new System.Drawing.Size(326, 28);
             this.mnuMuonTra.Text = "&Mượn - Trả sách (SV3)";
             this.mnuMuonTra.Click += new System.EventHandler(this.mnuMuonTra_Click);
             // 
@@ -170,14 +171,14 @@ namespace Library_Management
             this.toolStripSeparatorAdmin,
             this.mnuXemNhatKyLoi});
             this.mnuQuanTri.Name = "mnuQuanTri";
-            this.mnuQuanTri.Size = new System.Drawing.Size(130, 23);
+            this.mnuQuanTri.Size = new System.Drawing.Size(162, 27);
             this.mnuQuanTri.Text = "Quản &trị hệ thống";
             // 
             // mnuQuanLyTaiKhoan
             // 
             this.mnuQuanLyTaiKhoan.Name = "mnuQuanLyTaiKhoan";
             this.mnuQuanLyTaiKhoan.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-            this.mnuQuanLyTaiKhoan.Size = new System.Drawing.Size(265, 24);
+            this.mnuQuanLyTaiKhoan.Size = new System.Drawing.Size(385, 28);
             this.mnuQuanLyTaiKhoan.Text = "Quản lý &Tài khoản người dùng";
             this.mnuQuanLyTaiKhoan.Click += new System.EventHandler(this.mnuQuanLyTaiKhoan_Click);
             // 
@@ -185,19 +186,19 @@ namespace Library_Management
             // 
             this.mnuCaiDatThamSo.Name = "mnuCaiDatThamSo";
             this.mnuCaiDatThamSo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.mnuCaiDatThamSo.Size = new System.Drawing.Size(265, 24);
+            this.mnuCaiDatThamSo.Size = new System.Drawing.Size(385, 28);
             this.mnuCaiDatThamSo.Text = "Cài đặt &Tham số hệ thống";
             this.mnuCaiDatThamSo.Click += new System.EventHandler(this.mnuCaiDatThamSo_Click);
             // 
             // toolStripSeparatorAdmin
             // 
             this.toolStripSeparatorAdmin.Name = "toolStripSeparatorAdmin";
-            this.toolStripSeparatorAdmin.Size = new System.Drawing.Size(262, 6);
+            this.toolStripSeparatorAdmin.Size = new System.Drawing.Size(382, 6);
             // 
             // mnuXemNhatKyLoi
             // 
             this.mnuXemNhatKyLoi.Name = "mnuXemNhatKyLoi";
-            this.mnuXemNhatKyLoi.Size = new System.Drawing.Size(265, 24);
+            this.mnuXemNhatKyLoi.Size = new System.Drawing.Size(385, 28);
             this.mnuXemNhatKyLoi.Text = "Xem &Nhật ký lỗi hệ thống (log.txt)";
             this.mnuXemNhatKyLoi.Click += new System.EventHandler(this.mnuXemNhatKyLoi_Click);
             // 
@@ -210,39 +211,39 @@ namespace Library_Management
             this.toolStripSeparator2,
             this.mnuDongTatCa});
             this.mnuCuaSo.Name = "mnuCuaSo";
-            this.mnuCuaSo.Size = new System.Drawing.Size(65, 23);
+            this.mnuCuaSo.Size = new System.Drawing.Size(76, 27);
             this.mnuCuaSo.Text = "&Cửa sổ";
             // 
             // mnuCascade
             // 
             this.mnuCascade.Name = "mnuCascade";
-            this.mnuCascade.Size = new System.Drawing.Size(206, 24);
+            this.mnuCascade.Size = new System.Drawing.Size(251, 28);
             this.mnuCascade.Text = "Sắp xếp theo &Tầng";
             this.mnuCascade.Click += new System.EventHandler(this.mnuCascade_Click);
             // 
             // mnuTileHorizontal
             // 
             this.mnuTileHorizontal.Name = "mnuTileHorizontal";
-            this.mnuTileHorizontal.Size = new System.Drawing.Size(206, 24);
+            this.mnuTileHorizontal.Size = new System.Drawing.Size(251, 28);
             this.mnuTileHorizontal.Text = "Sắp xếp theo &Ngang";
             this.mnuTileHorizontal.Click += new System.EventHandler(this.mnuTileHorizontal_Click);
             // 
             // mnuTileVertical
             // 
             this.mnuTileVertical.Name = "mnuTileVertical";
-            this.mnuTileVertical.Size = new System.Drawing.Size(206, 24);
+            this.mnuTileVertical.Size = new System.Drawing.Size(251, 28);
             this.mnuTileVertical.Text = "Sắp xếp theo &Dọc";
             this.mnuTileVertical.Click += new System.EventHandler(this.mnuTileVertical_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(248, 6);
             // 
             // mnuDongTatCa
             // 
             this.mnuDongTatCa.Name = "mnuDongTatCa";
-            this.mnuDongTatCa.Size = new System.Drawing.Size(206, 24);
+            this.mnuDongTatCa.Size = new System.Drawing.Size(251, 28);
             this.mnuDongTatCa.Text = "Đó&ng tất cả cửa sổ";
             this.mnuDongTatCa.Click += new System.EventHandler(this.mnuDongTatCa_Click);
             // 
@@ -256,9 +257,9 @@ namespace Library_Management
             this.lblNguoiDung,
             this.lblSpring,
             this.lblDongHo});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 699);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 694);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1008, 27);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -267,32 +268,32 @@ namespace Library_Management
             this.lblTenThuVien.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTenThuVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(128)))), ((int)(((byte)(185)))));
             this.lblTenThuVien.Name = "lblTenThuVien";
-            this.lblTenThuVien.Size = new System.Drawing.Size(117, 17);
+            this.lblTenThuVien.Size = new System.Drawing.Size(139, 21);
             this.lblTenThuVien.Text = "Thư viện Đại học";
             // 
             // lblPhanCach
             // 
             this.lblPhanCach.Name = "lblPhanCach";
-            this.lblPhanCach.Size = new System.Drawing.Size(11, 17);
+            this.lblPhanCach.Size = new System.Drawing.Size(14, 21);
             this.lblPhanCach.Text = "|";
             // 
             // lblNguoiDung
             // 
             this.lblNguoiDung.Name = "lblNguoiDung";
-            this.lblNguoiDung.Size = new System.Drawing.Size(161, 17);
+            this.lblNguoiDung.Size = new System.Drawing.Size(198, 21);
             this.lblNguoiDung.Text = "Người dùng: Chưa xác định";
             // 
             // lblSpring
             // 
             this.lblSpring.Name = "lblSpring";
-            this.lblSpring.Size = new System.Drawing.Size(567, 17);
+            this.lblSpring.Size = new System.Drawing.Size(480, 21);
             this.lblSpring.Spring = true;
             // 
             // lblDongHo
             // 
             this.lblDongHo.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblDongHo.Name = "lblDongHo";
-            this.lblDongHo.Size = new System.Drawing.Size(137, 17);
+            this.lblDongHo.Size = new System.Drawing.Size(162, 21);
             this.lblDongHo.Text = "00/00/0000 00:00:00";
             // 
             // timerDongHo
@@ -303,7 +304,7 @@ namespace Library_Management
             // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 721);
             this.Controls.Add(this.statusStrip1);

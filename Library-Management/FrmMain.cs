@@ -431,6 +431,11 @@ namespace Library_Management
                 DuLieuChung.GhiLog("Lỗi lưu giao diện vào Registry: " + ex.Message);
             }
         }
+
+        private void mnuQuanLy_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
