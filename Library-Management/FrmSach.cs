@@ -769,6 +769,23 @@ namespace Library_Management
                 return;
             }
 
+            // Kiểm tra ràng buộc: Sách đang có phiếu mượn chưa trả thì không được xóa
+            bool dangDuocMuon = false;
+            foreach (PhieuMuon pm in DuLieuChung.DanhSachPhieuMuon)
+            {
+                if (pm.MaSach.ToLower() == ma.ToLower() && string.IsNullOrEmpty(pm.NgayTra))
+                {
+                    dangDuocMuon = true;
+                    break;
+                }
+            }
+
+            if (dangDuocMuon)
+            {
+                MessageBox.Show("Không thể xóa vì cuốn sách này hiện đang có độc giả mượn chưa trả!\nVui lòng kiểm tra lại trong phân hệ Mượn - Trả.", "Cảnh báo ràng buộc", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             DialogResult dr = MessageBox.Show("Bạn có chắc chắn muốn xóa cuốn sách: '" + txtTenSach.Text + "' (Mã: " + ma + ")?", "Xác nhận xóa sách", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dr == DialogResult.Yes)
             {
