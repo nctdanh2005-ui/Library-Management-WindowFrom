@@ -51,6 +51,16 @@ namespace Library_Management
             dangKhoiTao = false;
         }
 
+        private void FrmSach_Shown(object sender, EventArgs e)
+        {
+            // Đảm bảo khi form hiển thị lên màn hình sẽ luôn nạp toàn bộ danh sách sách
+            tvTheLoai.SelectedNode = null;
+            txtMaTheLoai.Clear();
+            txtTenTheLoai.Clear();
+            HienThiDanhSachSach(null);
+            this.ActiveControl = txtTimKiem;
+        }
+
         // ================= XỬ LÝ CÂY THỂ LOẠI (TREEVIEW) =================
 
         // Yêu cầu: Không dùng đệ quy, dùng 2 vòng lặp foreach lồng nhau (Cấp Cha -> Cấp Con)
@@ -99,7 +109,8 @@ namespace Library_Management
         // Sự kiện khi người dùng click chọn 1 thể loại trên TreeView
         private void tvTheLoai_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (dangKhoiTao || e.Node == null || e.Node.Tag == null)
+            // Chỉ lọc khi người dùng chủ động click chuột hoặc bàn phím (tránh TreeView tự chọn node đầu tiên khi nhận focus)
+            if (dangKhoiTao || e.Action == TreeViewAction.Unknown || e.Node == null || e.Node.Tag == null)
             {
                 return;
             }

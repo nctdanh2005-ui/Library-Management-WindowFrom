@@ -692,6 +692,7 @@ namespace Library_Management
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Quản lý Sách và Danh mục Thể loại";
             this.Load += new System.EventHandler(this.FrmSach_Load);
+            this.Shown += new System.EventHandler(this.FrmSach_Shown);
             this.pnlTrai.ResumeLayout(false);
             this.grpTheLoai.ResumeLayout(false);
             this.cmsTheLoai.ResumeLayout(false);
