@@ -721,5 +721,7 @@ namespace Library_Management
             int le = (rong - chuoi.Length) / 2;
             return new string(' ', le) + chuoi + new string(' ', rong - chuoi.Length - le);
         }
+
+        
     }
 }

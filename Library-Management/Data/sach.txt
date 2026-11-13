@@ -4,7 +4,7 @@ S03;Cơ sở dữ liệu nâng cao và ứng dụng;Đỗ Trung Tuấn;2019;CSDL
 S04;Thiết kế và cài đặt hệ CSDL quan hệ;Lê Tiến Vương;2022;CSDL;18;s04.jpg
 S05;Giáo trình Mạng máy tính căn bản;Hồ Đắc Phương;2021;MMT;25;s05.jpg
 S06;An toàn và bảo mật hệ thống mạng;Nguyễn Nam Hải;2023;MMT;10;s06.jpg
-S07;Nhập môn Công nghệ thông tin;Trần Đan Thư;2020;CNTT;30;s07.jpg
+S07;Nhập môn Công nghệ thông tin;Trần Đan Thư;2020;CNTT;22;s07.jpg
 S08;Kiến trúc máy tính và Hợp ngữ;Lê Đình Danh;2018;CNTT;14;s08.jpg
 S09;Quản trị học hiện đại;Nguyễn Thị Liên Diệp;2021;QTKD;16;s09.jpg
 S10;Khởi nghiệp tinh gọn trong thời đại số;Eric Ries;2020;QTKD;22;s10.jpg

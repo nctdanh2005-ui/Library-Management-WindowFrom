@@ -28,7 +28,6 @@ namespace Library_Management
             this.grpThongTin = new System.Windows.Forms.GroupBox();
             this.cboTrangThai = new System.Windows.Forms.ComboBox();
             this.lblTrangThai = new System.Windows.Forms.Label();
-            this.lblGoiNgay = new System.Windows.Forms.Label();
             this.txtNgayHetHan = new System.Windows.Forms.TextBox();
             this.lblNgayHetHan = new System.Windows.Forms.Label();
             this.txtLop = new System.Windows.Forms.TextBox();
@@ -69,7 +68,7 @@ namespace Library_Management
             this.pnlTrai.Location = new System.Drawing.Point(0, 0);
             this.pnlTrai.Name = "pnlTrai";
             this.pnlTrai.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlTrai.Size = new System.Drawing.Size(340, 681);
+            this.pnlTrai.Size = new System.Drawing.Size(350, 681);
             this.pnlTrai.TabIndex = 0;
             // 
             // grpThaoTac
@@ -87,7 +86,7 @@ namespace Library_Management
             this.grpThaoTac.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(128)))), ((int)(((byte)(185)))));
             this.grpThaoTac.Location = new System.Drawing.Point(8, 243);
             this.grpThaoTac.Name = "grpThaoTac";
-            this.grpThaoTac.Size = new System.Drawing.Size(324, 430);
+            this.grpThaoTac.Size = new System.Drawing.Size(334, 430);
             this.grpThaoTac.TabIndex = 1;
             this.grpThaoTac.TabStop = false;
             this.grpThaoTac.Text = "THAO TÁC ĐỘC GIẢ";
@@ -224,7 +223,6 @@ namespace Library_Management
             // 
             this.grpThongTin.Controls.Add(this.cboTrangThai);
             this.grpThongTin.Controls.Add(this.lblTrangThai);
-            this.grpThongTin.Controls.Add(this.lblGoiNgay);
             this.grpThongTin.Controls.Add(this.txtNgayHetHan);
             this.grpThongTin.Controls.Add(this.lblNgayHetHan);
             this.grpThongTin.Controls.Add(this.txtLop);
@@ -238,7 +236,7 @@ namespace Library_Management
             this.grpThongTin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(128)))), ((int)(((byte)(185)))));
             this.grpThongTin.Location = new System.Drawing.Point(8, 8);
             this.grpThongTin.Name = "grpThongTin";
-            this.grpThongTin.Size = new System.Drawing.Size(324, 235);
+            this.grpThongTin.Size = new System.Drawing.Size(334, 235);
             this.grpThongTin.TabIndex = 0;
             this.grpThongTin.TabStop = false;
             this.grpThongTin.Text = "THÔNG TIN ĐỘC GIẢ";
@@ -267,23 +265,12 @@ namespace Library_Management
             this.lblTrangThai.TabIndex = 9;
             this.lblTrangThai.Text = "Trạng thái:";
             // 
-            // lblGoiNgay
-            // 
-            this.lblGoiNgay.AutoSize = true;
-            this.lblGoiNgay.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblGoiNgay.ForeColor = System.Drawing.Color.Gray;
-            this.lblGoiNgay.Location = new System.Drawing.Point(241, 137);
-            this.lblGoiNgay.Name = "lblGoiNgay";
-            this.lblGoiNgay.Size = new System.Drawing.Size(103, 20);
-            this.lblGoiNgay.TabIndex = 8;
-            this.lblGoiNgay.Text = "(dd/MM/yyyy)";
-            // 
             // txtNgayHetHan
             // 
             this.txtNgayHetHan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.txtNgayHetHan.Location = new System.Drawing.Point(95, 134);
             this.txtNgayHetHan.Name = "txtNgayHetHan";
-            this.txtNgayHetHan.Size = new System.Drawing.Size(140, 29);
+            this.txtNgayHetHan.Size = new System.Drawing.Size(151, 29);
             this.txtNgayHetHan.TabIndex = 7;
             // 
             // lblNgayHetHan
@@ -360,10 +347,10 @@ namespace Library_Management
             this.pnlPhai.Controls.Add(this.pnlTimKiem);
             this.pnlPhai.Controls.Add(this.lblChuThich);
             this.pnlPhai.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlPhai.Location = new System.Drawing.Point(340, 0);
+            this.pnlPhai.Location = new System.Drawing.Point(350, 0);
             this.pnlPhai.Name = "pnlPhai";
             this.pnlPhai.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlPhai.Size = new System.Drawing.Size(844, 681);
+            this.pnlPhai.Size = new System.Drawing.Size(834, 681);
             this.pnlPhai.TabIndex = 1;
             // 
             // grpDanhSach
@@ -375,7 +362,7 @@ namespace Library_Management
             this.grpDanhSach.Location = new System.Drawing.Point(8, 53);
             this.grpDanhSach.Name = "grpDanhSach";
             this.grpDanhSach.Padding = new System.Windows.Forms.Padding(6);
-            this.grpDanhSach.Size = new System.Drawing.Size(828, 598);
+            this.grpDanhSach.Size = new System.Drawing.Size(818, 598);
             this.grpDanhSach.TabIndex = 1;
             this.grpDanhSach.TabStop = false;
             this.grpDanhSach.Text = "DANH SÁCH ĐỘC GIẢ";
@@ -396,7 +383,7 @@ namespace Library_Management
             this.lvDocGia.Location = new System.Drawing.Point(6, 29);
             this.lvDocGia.MultiSelect = false;
             this.lvDocGia.Name = "lvDocGia";
-            this.lvDocGia.Size = new System.Drawing.Size(816, 563);
+            this.lvDocGia.Size = new System.Drawing.Size(806, 563);
             this.lvDocGia.TabIndex = 0;
             this.lvDocGia.UseCompatibleStateImageBehavior = false;
             this.lvDocGia.View = System.Windows.Forms.View.Details;
@@ -440,7 +427,7 @@ namespace Library_Management
             this.pnlTimKiem.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTimKiem.Location = new System.Drawing.Point(8, 8);
             this.pnlTimKiem.Name = "pnlTimKiem";
-            this.pnlTimKiem.Size = new System.Drawing.Size(828, 45);
+            this.pnlTimKiem.Size = new System.Drawing.Size(818, 45);
             this.pnlTimKiem.TabIndex = 0;
             // 
             // btnTatCa
@@ -499,9 +486,9 @@ namespace Library_Management
             // txtTimKiem
             // 
             this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtTimKiem.Location = new System.Drawing.Point(140, 10);
+            this.txtTimKiem.Location = new System.Drawing.Point(152, 10);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(200, 30);
+            this.txtTimKiem.Size = new System.Drawing.Size(188, 30);
             this.txtTimKiem.TabIndex = 1;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             this.txtTimKiem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimKiem_KeyDown);
@@ -523,7 +510,7 @@ namespace Library_Management
             this.lblChuThich.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.lblChuThich.Location = new System.Drawing.Point(8, 651);
             this.lblChuThich.Name = "lblChuThich";
-            this.lblChuThich.Size = new System.Drawing.Size(828, 22);
+            this.lblChuThich.Size = new System.Drawing.Size(818, 22);
             this.lblChuThich.TabIndex = 2;
             this.lblChuThich.Text = "CẢNH BÁO MÀU:  HỒNG = thẻ đã hết hạn hoặc bị khóa   |   VÀNG = thẻ sắp hết hạn (c" +
     "òn dưới 7 ngày)";
@@ -565,7 +552,6 @@ namespace Library_Management
         private System.Windows.Forms.TextBox txtLop;
         private System.Windows.Forms.Label lblNgayHetHan;
         private System.Windows.Forms.TextBox txtNgayHetHan;
-        private System.Windows.Forms.Label lblGoiNgay;
         private System.Windows.Forms.Label lblTrangThai;
         private System.Windows.Forms.ComboBox cboTrangThai;
         private System.Windows.Forms.GroupBox grpThaoTac;
